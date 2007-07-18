@@ -29,6 +29,7 @@ BuildRequires:	lesstif-devel
 BuildRequires:	xmlto
 BuildRequires:	dbus-devel
 BuildRequires:	dbus-glib-devel
+BuildRequires:	python
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
