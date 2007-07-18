@@ -30,6 +30,7 @@ BuildRequires:	xmlto
 BuildRequires:	dbus-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	python
+BuildRequires:	python-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
