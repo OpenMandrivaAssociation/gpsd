@@ -1,26 +1,23 @@
-%define name	gpsd
-%define version	2.33
-%define rel	1
-%define release %mkrel %{rel}
+%define name		gpsd
+%define version		2.34
+%define rel		1
+%define release 	%mkrel %{rel}
 
-%define _hotplugdir %{_prefix}/lib/hotplug
+%define _hotplugdir	%{_prefix}/lib/hotplug
 
-%define	py_ver	%(python -V 2>&1 | cut -f2 -d" " | cut -f1,2 -d".")
-%define	major	15
-%define	libname	%mklibname %{name} %{major}
+%define	major		15
+%define	libname		%mklibname %{name} %{major}
+%define develname	%mklibname %{name} -d
+%define staticname	
 
 Name: 	 	%{name}
 Summary: 	GPS data translator and GUI
 Version: 	%{version}
 Release: 	%{release}
 
-Source0:	%{name}-%{version}.tar.bz2
+Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 Patch1:		gpsd-2.28-udev.patch
-# (fc) 2.30-1mdk fix build with dbus 0.50
-#Patch2:		gpsd-2.30-dbus050.patch.bz2
-# (fc) 2.30-5mdk fix build on x86-64
-#Patch3:		gpsd-2.30-fixbuild.patch.bz2
-URL:		http://www.pygps.org/gpsd/gpsd.html
+URL:		http://gpsd.berlios.de
 License:	GPL
 Group:		Sciences/Geosciences
 Provides:	gps3d
@@ -28,7 +25,6 @@ Obsoletes:	gps3d
 BuildRequires:	X11-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  udev-tools
-BuildRequires:  automake1.9
 BuildRequires:	lesstif-devel
 BuildRequires:	xmlto
 BuildRequires:	dbus-devel
@@ -58,28 +54,45 @@ Summary:	Libraries for gpsd
 Group:		System/Libraries
 
 %description -n	%{libname}
-Libraries for gpsd.
+gpsd is a service daemon that mediates access to a GPS sensor
+connected to the host computer by serial or USB interface, making its
+data on the location/course/velocity of the sensor available to be
+queried on TCP port 2947 of the host computer.  With gpsd, multiple
+GPS client applications (such as navigational and wardriving software)
+can share access to a GPS without contention or loss of data.  Also,
+gpsd responds to queries with a format that is substantially easier to
+parse than NMEA 0183.  A client library is provided for applications.
 
-%package -n	%{libname}-devel
+After installing this RPM, gpsd will automatically connect to USB
+GPSes when they are plugged in and requires no configuration.  For
+serial GPSes, you will need to start gpsd by hand.  Once connected,
+the daemon automatically discovers the correct baudrate, stop bits,
+and protocol. The daemon will be quiescent when there are no
+clients asking for location information, and copes gracefully when the
+GPS is unplugged and replugged.
+
+%package -n	%{develname}
 Summary:	Client libraries in C and Python for talking to a running gpsd or GPS
 Group:		Development/C
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
 Requires:	%{libname} = %{version}
+Obsoletes:	%{mklibname gpsd 15 -d}
 
-%description -n	%{libname}-devel
+%description -n	%{develname}
 This package provides C header files for the gpsd shared libraries
 that manage access to a GPS for applications; also Python modules.
 You will need to have gpsd installed for it to work.
 
-%package -n	%{libname}-static-devel
+%package -n	%{staticname}
 Summary:	Static libraries for gpsd
 Group:		Development/C
 Provides:	%{name}-static-devel = %{version}-%{release}
 Provides:	lib%{name}-static-devel = %{version}-%{release}
-Requires:	%{libname}-devel = %{version}
+Requires:	%{develname} = %{version}
+Obsoletes:	%{mklibname gpsd 15 -s -d}
 
-%description -n	%{libname}-static-devel
+%description -n	%{staticname}
 This package provides C header files for the gpsd shared libraries
 that manage access to a GPS for applications; also Python modules.
 You will need to have gpsd installed for it to work.
@@ -101,19 +114,9 @@ to dump the package version and exit. Additionally, it accepts -rv
 %prep
 %setup -q
 %patch1 -p1 -b .udev
-#%patch2 -p1 -b .dbus050
-#%patch3 -p1 -b .fixbuild
-
-#needed by patch3
-aclocal-1.9
-touch NEWS ChangeLog
-automake-1.9 
 
 %build
-%configure2_5x \
-%if %mdkversion > 1020
-	--enable-dbus
-%endif
+%configure2_5x --enable-dbus
 
 %make
 										
@@ -131,24 +134,17 @@ install -m755 gpsd.hotplug $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb/gpsd
 
 install -m755 gps.py -D %{buildroot}%{_libdir}/python${PYVERSION}/site-packages/gps.py
 
-
-#menu
-mkdir -p %{buildroot}%{_menudir}
-cat << EOF > %{buildroot}%{_menudir}/%{name}-clients
-?package(%{name}-clients): command="xgps" icon="communications_section.png" needs="x11" title="XGPS" longtitle="XGPS" section="More Applications/Sciences/Geosciences" xdg="true"
-EOF
-
 mkdir -p %{buildroot}%{_datadir}/applications
 cat > %{buildroot}%{_datadir}/applications/mandriva-%{name}-clients.desktop << EOF
 [Desktop Entry]
 Name=XGPS
 Comment=XGPS
 Exec=xgps
-Icon=communications_section
+Icon=communications_section.png
 Terminal=false
 Type=Application
 StartupNotify=true
-Categories=X-MandrivaLinux-Sciences-Geosciences;Science;Geology;
+Categories=Science;Geology;
 EOF
 
 %post -n %{libname} -p /sbin/ldconfig
@@ -187,7 +183,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_libdir}/libgps.so.*
 
-%files -n %{libname}-devel
+%files -n %{develname}
 %defattr(-,root,root,-)
 %doc README HACKING TODO
 %{_includedir}/gps.h
@@ -202,7 +198,7 @@ rm -rf %{buildroot}
 %{_bindir}/gpsfake
 %{_libdir}/python*/site-packages/gps.py*
 
-%files -n %{libname}-static-devel
+%files -n %{staticname}
 %defattr(-,root,root)
 %{_libdir}/libgps.a
 
@@ -221,7 +217,6 @@ rm -rf %{buildroot}
 %{_mandir}/man1/xgpsspeed.1*
 %{_libdir}/X11/app-defaults/xgps
 %{_libdir}/X11/app-defaults/xgpsspeed
-%{_menudir}/*
 %{_datadir}/applications/mandriva-%{name}-clients.desktop
 
 
