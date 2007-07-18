@@ -8,7 +8,7 @@
 %define	major		15
 %define	libname		%mklibname %{name} %{major}
 %define develname	%mklibname %{name} -d
-%define staticname	
+%define staticname	%mklibname %{name} -s -d
 
 Name: 	 	%{name}
 Summary: 	GPS data translator and GUI
