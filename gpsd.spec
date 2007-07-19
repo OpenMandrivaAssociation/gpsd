@@ -159,7 +159,7 @@ Categories=Science;Geology;
 EOF
 
 #remove unpackaged file
-rm -f %{buildroot}%{_prefix}/lib/python/site-packages/gps.py
+rm -f %{buildroot}%{_libdir}/python/site-packages/gps.py
 
 #put the python file(s) in the right place (it's arch-dependent)
 
