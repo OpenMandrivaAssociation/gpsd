@@ -166,6 +166,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc README
 %{_sbindir}/gpsd
+%{_bindir}/gpscat
+%{_bindir}/gpsctl
 %{_bindir}/gpsprof
 %{_bindir}/sirfmon
 %{_bindir}/gpsflash
@@ -174,6 +176,8 @@ rm -rf %{buildroot}
 %{_mandir}/man1/gpsflash.1*
 %{_mandir}/man1/gpsprof.1*
 %{_mandir}/man1/gps.1*
+%{_mandir}/man1/gpscat.1*
+%{_mandir}/man1/gpsctl.1*
 %{_mandir}/man1/sirfmon.1*
 %{_mandir}/man1/rtcm*.1*
 %{_mandir}/man5/rtcm*.5*
@@ -198,7 +202,7 @@ rm -rf %{buildroot}
 %{_mandir}/man3/libgpsmm.3*
 %{_mandir}/man3/libgpsd.3*
 %{_bindir}/gpsfake
-%{_libdir}/python*/site-packages/gps.py*
+%{py_puresitedir}/*.py*
 
 %files -n %{staticname}
 %defattr(-,root,root)
