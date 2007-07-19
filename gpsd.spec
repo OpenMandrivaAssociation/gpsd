@@ -161,6 +161,10 @@ EOF
 #remove unpackaged file
 rm -f %{buildroot}%{_prefix}/lib/python/site-packages/gps.py
 
+#put the python .so file(s) in the right place (it's arch-dependent)
+mkdir -p %{py_platsitedir}
+mv %{buildroot}%{py_puresitedir}/*.so %{buildroot}%{py_platsitedir}
+
 %post -n %{libname} -p /sbin/ldconfig
 
 %postun -n %{libname} -p /sbin/ldconfig
