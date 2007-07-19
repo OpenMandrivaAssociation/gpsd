@@ -161,9 +161,14 @@ EOF
 #remove unpackaged file
 rm -f %{buildroot}%{_prefix}/lib/python/site-packages/gps.py
 
-#put the python .so file(s) in the right place (it's arch-dependent)
+#put the python file(s) in the right place (it's arch-dependent)
+
 mkdir -p %{py_platsitedir}
-mv %{buildroot}%{py_puresitedir}/*.so %{buildroot}%{py_platsitedir}
+# fixme: may need to be adapted to include other 64-bit arches, I'm
+# not sure what directory they use - AdamW 2007/07
+%ifarch x86_64
+mv %{buildroot}%{py_puresitedir}/* %{buildroot}%{py_platsitedir}
+%endif
 
 %post -n %{libname} -p /sbin/ldconfig
 
@@ -242,5 +247,4 @@ rm -rf %{buildroot}
 
 %files python
 %defattr(-,root,root,-)
-%{py_puresitedir}/*.py*
-%{py_platsitedir}/*.so
+%{py_platsitedir}/*
