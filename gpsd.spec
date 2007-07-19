@@ -163,10 +163,10 @@ rm -f %{buildroot}%{_prefix}/lib/python/site-packages/gps.py
 
 #put the python file(s) in the right place (it's arch-dependent)
 
-mkdir -p %{py_platsitedir}
 # fixme: may need to be adapted to include other 64-bit arches, I'm
 # not sure what directory they use - AdamW 2007/07
 %ifarch x86_64
+mkdir -p %{buildroot}%{py_platsitedir}
 mv %{buildroot}%{py_puresitedir}/* %{buildroot}%{py_platsitedir}
 %endif
 
