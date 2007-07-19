@@ -113,6 +113,15 @@ It accepts an -h option and optional argument as for gps, or a -v option
 to dump the package version and exit. Additionally, it accepts -rv
 (reverse video) and -nc (needle color) options.
 
+%package	python
+Summary:	Python bindings for gpsd
+Group:		Development/Python
+Requires:	%{libname} = %{version}
+
+%description	python
+This package contains the Python bindings for gpsd. It will be needed
+for any applications that interface with gpsd via python.
+
 %prep
 %setup -q
 %patch1 -p1 -b .udev
@@ -148,6 +157,9 @@ Type=Application
 StartupNotify=true
 Categories=Science;Geology;
 EOF
+
+#remove unpackaged file
+rm -f %{buildroot}%{_prefix}/lib/python/site-packages/gps.py
 
 %post -n %{libname} -p /sbin/ldconfig
 
@@ -202,7 +214,6 @@ rm -rf %{buildroot}
 %{_mandir}/man3/libgpsmm.3*
 %{_mandir}/man3/libgpsd.3*
 %{_bindir}/gpsfake
-%{py_puresitedir}/*.py*
 
 %files -n %{staticname}
 %defattr(-,root,root)
@@ -225,4 +236,7 @@ rm -rf %{buildroot}
 %{_libdir}/X11/app-defaults/xgpsspeed
 %{_datadir}/applications/mandriva-%{name}-clients.desktop
 
-
+%files python
+%defattr(-,root,root,-)
+%{py_puresitedir}/*.py*
+%{py_platsitedir}/*.so
