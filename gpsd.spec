@@ -187,7 +187,7 @@ rm -rf %{buildroot}
 
 %files -n %{develname}
 %defattr(-,root,root,-)
-%doc README HACKING TODO
+%doc TODO
 %{_includedir}/gps.h
 %{_includedir}/libgpsmm.h
 %{_includedir}/gpsd.h
