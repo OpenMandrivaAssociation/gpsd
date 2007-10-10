@@ -151,7 +151,7 @@ cat > %{buildroot}%{_datadir}/applications/mandriva-%{name}-clients.desktop << E
 Name=XGPS
 Comment=XGPS
 Exec=xgps
-Icon=communications_section.png
+Icon=communications_section
 Terminal=false
 Type=Application
 StartupNotify=true
