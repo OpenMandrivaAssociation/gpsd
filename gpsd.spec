@@ -1,11 +1,11 @@
 %define name		gpsd
 %define version		2.34
-%define rel		1
+%define rel		2
 %define release 	%mkrel %{rel}
 
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
-%define	major		15
+%define	major		16
 %define	libname		%mklibname %{name} %{major}
 %define develname	%mklibname %{name} -d
 %define staticname	%mklibname %{name} -s -d
@@ -54,6 +54,7 @@ GPS is unplugged and replugged.
 %package -n	%{libname}
 Summary:	Libraries for gpsd
 Group:		System/Libraries
+Obsoletes:	%{mklibname gpsd 15} > 2.34
 
 %description -n	%{libname}
 gpsd is a service daemon that mediates access to a GPS sensor
@@ -208,7 +209,7 @@ rm -rf %{buildroot}
 
 %files -n %{libname}
 %defattr(-,root,root)
-%{_libdir}/libgps.so.*
+%{_libdir}/libgps.so.%{major}*
 
 %files -n %{develname}
 %defattr(-,root,root,-)
