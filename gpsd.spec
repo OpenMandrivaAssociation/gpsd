@@ -31,7 +31,6 @@ BuildRequires:	dbus-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	python
 BuildRequires:	python-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 gpsd is a service daemon that mediates access to a GPS sensor
