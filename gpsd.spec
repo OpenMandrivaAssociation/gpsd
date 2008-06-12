@@ -179,11 +179,15 @@ mv %{buildroot}%{py_puresitedir}/* %{buildroot}%{py_platsitedir}
 %postun -n %{libname} -p /sbin/ldconfig
 %endif
 
+%if %mdkversion < 200900
 %post clients
 %update_menus
+%endif
 
+%if %mdkversion < 200900
 %postun clients
 %clean_menus
+%endif
 
 %clean
 rm -rf %{buildroot}
