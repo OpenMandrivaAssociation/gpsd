@@ -1,6 +1,6 @@
 %define name		gpsd
-%define version		2.34
-%define rel		2
+%define version		2.37
+%define rel		1
 %define release 	%mkrel %{rel}
 
 %define _hotplugdir	%{_prefix}/lib/hotplug
@@ -18,7 +18,7 @@ Release: 	%{release}
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 Patch1:		gpsd-2.28-udev.patch
 URL:		http://gpsd.berlios.de
-License:	GPL
+License:	BSD
 Group:		Sciences/Geosciences
 Provides:	gps3d
 Obsoletes:	gps3d
