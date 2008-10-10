@@ -1,3 +1,5 @@
+%define _disable_ld_no_undefined	1
+
 %define name		gpsd
 %define version		2.37
 %define rel		1
@@ -5,7 +7,7 @@
 
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
-%define	major		16
+%define	major		17
 %define	libname		%mklibname %{name} %{major}
 %define develname	%mklibname %{name} -d
 %define staticname	%mklibname %{name} -s -d
@@ -31,6 +33,7 @@ BuildRequires:	dbus-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	python
 BuildRequires:	python-devel
+Requires:	%{name}-python = %{version}-%{release}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -118,6 +121,7 @@ to dump the package version and exit. Additionally, it accepts -rv
 Summary:	Python bindings for gpsd
 Group:		Development/Python
 Requires:	%{libname} = %{version}
+Requires:	python
 
 %description	python
 This package contains the Python bindings for gpsd. It will be needed
@@ -227,6 +231,7 @@ rm -rf %{buildroot}
 %{_includedir}/gpsd.h
 %{_libdir}/libgps.la
 %{_libdir}/libgps.so
+%{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
 %{_mandir}/man3/libgpsmm.3*
