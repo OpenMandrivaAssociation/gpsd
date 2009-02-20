@@ -1,8 +1,8 @@
 %define _disable_ld_no_undefined	1
 
 %define name		gpsd
-%define version		2.37
-%define rel		2
+%define version		2.38
+%define rel		1
 %define release 	%mkrel %{rel}
 
 %define _hotplugdir	%{_prefix}/lib/hotplug
@@ -134,7 +134,7 @@ for any applications that interface with gpsd via python.
 %build
 %configure2_5x --enable-dbus
 
-%make
+make
 										
 %install
 rm -rf %{buildroot}
@@ -250,6 +250,7 @@ rm -rf %{buildroot}
 %{_bindir}/xgpsspeed
 %{_bindir}/gpxlogger
 %{_bindir}/cgpxlogger
+%{_bindir}/gpsdlcdd
 %{_mandir}/man1/xgps.1*
 %{_mandir}/man1/cgps.1*
 %{_mandir}/man1/cgpxlogger.1*
