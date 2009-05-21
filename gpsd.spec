@@ -2,7 +2,7 @@
 
 %define name		gpsd
 %define version		2.38
-%define rel		1
+%define rel		2
 %define release 	%mkrel %{rel}
 
 %define _hotplugdir	%{_prefix}/lib/hotplug
