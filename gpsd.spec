@@ -1,13 +1,13 @@
 %define _disable_ld_no_undefined	1
 
 %define name		gpsd
-%define version		2.38
-%define rel		2
+%define version		2.39
+%define rel		1
 %define release 	%mkrel %{rel}
 
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
-%define	major		17
+%define	major		18
 %define	libname		%mklibname %{name} %{major}
 %define develname	%mklibname %{name} -d
 %define staticname	%mklibname %{name} -s -d
@@ -203,17 +203,17 @@ rm -rf %{buildroot}
 %{_bindir}/gpscat
 %{_bindir}/gpsctl
 %{_bindir}/gpsprof
-%{_bindir}/sirfmon
+%{_bindir}/gpsmon
 %{_bindir}/gpsflash
-%{_bindir}/rtcmdecode
+%{_bindir}/gpsdecode
 %{_mandir}/man8/gpsd.8*
 %{_mandir}/man1/gpsflash.1*
 %{_mandir}/man1/gpsprof.1*
 %{_mandir}/man1/gps.1*
 %{_mandir}/man1/gpscat.1*
 %{_mandir}/man1/gpsctl.1*
-%{_mandir}/man1/sirfmon.1*
-%{_mandir}/man1/rtcm*.1*
+%{_mandir}/man1/gpsmon.1*
+%{_mandir}/man1/gpsdecode.1*
 %{_mandir}/man5/rtcm*.5*
 %{_mandir}/man5/srec.5*
 %{_sysconfdir}/udev/agents.d/usb/gpsd
@@ -249,8 +249,7 @@ rm -rf %{buildroot}
 %{_bindir}/gpspipe
 %{_bindir}/xgpsspeed
 %{_bindir}/gpxlogger
-%{_bindir}/cgpxlogger
-%{_bindir}/gpsdlcdd
+%{_bindir}/lcdgps
 %{_mandir}/man1/xgps.1*
 %{_mandir}/man1/cgps.1*
 %{_mandir}/man1/cgpxlogger.1*
