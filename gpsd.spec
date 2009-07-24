@@ -1,10 +1,5 @@
 %define _disable_ld_no_undefined	1
 
-%define name		gpsd
-%define version		2.39
-%define rel		1
-%define release 	%mkrel %{rel}
-
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
 %define	major		18
@@ -12,11 +7,10 @@
 %define develname	%mklibname %{name} -d
 %define staticname	%mklibname %{name} -s -d
 
-Name: 	 	%{name}
+Name: 	 	gpsd
 Summary: 	GPS data translator and GUI
-Version: 	%{version}
-Release: 	%{release}
-
+Version:    2.39
+Release: 	%mkrel 2
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 Patch1:		gpsd-2.28-udev.patch
 URL:		http://gpsd.berlios.de
