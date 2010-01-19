@@ -2,17 +2,19 @@
 
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
-%define	major		18
+%define	major		19
 %define	libname		%mklibname %{name} %{major}
 %define develname	%mklibname %{name} -d
 %define staticname	%mklibname %{name} -s -d
 
 Name: 	 	gpsd
 Summary: 	GPS data translator and GUI
-Version:    2.39
-Release: 	%mkrel 2
+Version:	2.90
+Release: 	%mkrel 1
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
-Patch1:		gpsd-2.28-udev.patch
+Source1:	gpsd.init
+Source2:	gpsd.sysconfig
+Patch1:		gpsd-2.90-udev.patch
 URL:		http://gpsd.berlios.de
 License:	BSD
 Group:		Sciences/Geosciences
@@ -128,7 +130,7 @@ for any applications that interface with gpsd via python.
 %build
 %configure2_5x --enable-dbus
 
-make
+%make
 										
 %install
 rm -rf %{buildroot}
@@ -137,12 +139,21 @@ rm -rf %{buildroot}
 install -m644 xgps.ad -D %{buildroot}%{_libdir}/X11/app-defaults/xgps/xgps
 install -m644 xgpsspeed.ad -D %{buildroot}%{_libdir}/X11/app-defaults/xgpsspeed
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-/usr/sbin/udev_import_usermap --no-modprobe usb gpsd.usermap > $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-gpsd.rules
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb
-install -m755 gpsd.hotplug $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb/gpsd
+mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
+/usr/sbin/udev_import_usermap --no-modprobe usb gpsd.usermap > %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
+mkdir -p %{buildroot}%{_sysconfdir}/udev/agents.d/usb
+install -m755 gpsd.hotplug %{buildroot}%{_sysconfdir}/udev/agents.d/usb/gpsd
 
 install -m755 gps.py -D %{buildroot}%{_libdir}/python${PYVERSION}/site-packages/gps.py
+
+# init scripts
+%{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/init.d
+%{__install} -p -m 0755 %{SOURCE1} \
+	%{buildroot}%{_sysconfdir}/init.d/gpsd
+
+%{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/sysconfig
+%{__install} -p -m 0644 %{SOURCE2} \
+	%{buildroot}%{_sysconfdir}/sysconfig/gpsd
 
 mkdir -p %{buildroot}%{_datadir}/applications
 cat > %{buildroot}%{_datadir}/applications/mandriva-%{name}-clients.desktop << EOF
@@ -198,10 +209,8 @@ rm -rf %{buildroot}
 %{_bindir}/gpsctl
 %{_bindir}/gpsprof
 %{_bindir}/gpsmon
-%{_bindir}/gpsflash
 %{_bindir}/gpsdecode
 %{_mandir}/man8/gpsd.8*
-%{_mandir}/man1/gpsflash.1*
 %{_mandir}/man1/gpsprof.1*
 %{_mandir}/man1/gps.1*
 %{_mandir}/man1/gpscat.1*
@@ -210,6 +219,8 @@ rm -rf %{buildroot}
 %{_mandir}/man1/gpsdecode.1*
 %{_mandir}/man5/rtcm*.5*
 %{_mandir}/man5/srec.5*
+%{_sysconfdir}/init.d/%{name}
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_sysconfdir}/udev/agents.d/usb/gpsd
 %{_sysconfdir}/udev/rules.d/70-gpsd.rules
 
@@ -248,6 +259,7 @@ rm -rf %{buildroot}
 %{_mandir}/man1/cgps.1*
 %{_mandir}/man1/cgpxlogger.1*
 %{_mandir}/man1/gpspipe.1*
+%{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/xgpsspeed.1*
 %{_libdir}/X11/app-defaults/xgps
 %{_libdir}/X11/app-defaults/xgpsspeed
