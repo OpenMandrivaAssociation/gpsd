@@ -1,4 +1,4 @@
-%define _disable_ld_no_undefined	1
+%define _disable_ld_no_undefined	0
 
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
@@ -9,7 +9,7 @@
 
 Name: 	 	gpsd
 Summary: 	GPS data translator and GUI
-Version:	2.90
+Version:	2.91
 Release: 	%mkrel 1
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 Source1:	gpsd.init
@@ -136,15 +136,15 @@ for any applications that interface with gpsd via python.
 rm -rf %{buildroot}
 
 %makeinstall
-install -m644 xgps.ad -D %{buildroot}%{_libdir}/X11/app-defaults/xgps/xgps
-install -m644 xgpsspeed.ad -D %{buildroot}%{_libdir}/X11/app-defaults/xgpsspeed
+#install -m644 xgps.ad -D %{buildroot}%{_libdir}/X11/app-defaults/xgps/xgps
+#install -m644 xgpsspeed.ad -D %{buildroot}%{_libdir}/X11/app-defaults/xgpsspeed
 
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
 /usr/sbin/udev_import_usermap --no-modprobe usb gpsd.usermap > %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
 mkdir -p %{buildroot}%{_sysconfdir}/udev/agents.d/usb
 install -m755 gpsd.hotplug %{buildroot}%{_sysconfdir}/udev/agents.d/usb/gpsd
 
-install -m755 gps.py -D %{buildroot}%{_libdir}/python${PYVERSION}/site-packages/gps.py
+#install -m755 gps.py -D %{buildroot}%{_libdir}/python${PYVERSION}/site-packages/gps.py
 
 # init scripts
 %{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/init.d
@@ -257,12 +257,12 @@ rm -rf %{buildroot}
 %{_bindir}/lcdgps
 %{_mandir}/man1/xgps.1*
 %{_mandir}/man1/cgps.1*
-%{_mandir}/man1/cgpxlogger.1*
+#%{_mandir}/man1/cgpxlogger.1*
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/xgpsspeed.1*
-%{_libdir}/X11/app-defaults/xgps
-%{_libdir}/X11/app-defaults/xgpsspeed
+#%{_libdir}/X11/app-defaults/xgps
+#%{_libdir}/X11/app-defaults/xgpsspeed
 %{_datadir}/applications/mandriva-%{name}-clients.desktop
 
 %files python
