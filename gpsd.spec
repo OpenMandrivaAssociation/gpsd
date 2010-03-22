@@ -9,10 +9,10 @@
 
 Name: 	 	gpsd
 Summary: 	GPS data translator and GUI
-Version:	2.91
+Version:	2.92
 Release: 	%mkrel 1
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
-Source1:	gpsd.init
+#Source1:	gpsd.init
 Source2:	gpsd.sysconfig
 Patch1:		gpsd-2.90-udev.patch
 URL:		http://gpsd.berlios.de
@@ -136,11 +136,15 @@ for any applications that interface with gpsd via python.
 rm -rf %{buildroot}
 
 %makeinstall
-#install -m644 xgps.ad -D %{buildroot}%{_libdir}/X11/app-defaults/xgps/xgps
-#install -m644 xgpsspeed.ad -D %{buildroot}%{_libdir}/X11/app-defaults/xgpsspeed
+
+# additional gpsd files
+mkdir -p %{buildroot}%{_libdir}/X11/app-defaults/
+cp xgps %{buildroot}%{_libdir}/X11/app-defaults/xgps
+cp xgpsspeed %{buildroot}%{_libdir}/X11/app-defaults/xgpsspeed
 
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
 /usr/sbin/udev_import_usermap --no-modprobe usb gpsd.usermap > %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
+
 mkdir -p %{buildroot}%{_sysconfdir}/udev/agents.d/usb
 install -m755 gpsd.hotplug %{buildroot}%{_sysconfdir}/udev/agents.d/usb/gpsd
 
@@ -148,7 +152,7 @@ install -m755 gpsd.hotplug %{buildroot}%{_sysconfdir}/udev/agents.d/usb/gpsd
 
 # init scripts
 %{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/init.d
-%{__install} -p -m 0755 %{SOURCE1} \
+%{__install} -p -m 0755 packaging/etc_init.d_gpsd \
 	%{buildroot}%{_sysconfdir}/init.d/gpsd
 
 %{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/sysconfig
@@ -169,7 +173,7 @@ Categories=Science;Geology;
 EOF
 
 #remove unpackaged file
-rm -f %{buildroot}%{_libdir}/python/site-packages/gps.py
+#rm -f %{buildroot}%{_libdir}/python/site-packages/gps.py
 
 #put the python file(s) in the right place (it's arch-dependent)
 
@@ -261,8 +265,8 @@ rm -rf %{buildroot}
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/xgpsspeed.1*
-#%{_libdir}/X11/app-defaults/xgps
-#%{_libdir}/X11/app-defaults/xgpsspeed
+%{_libdir}/X11/app-defaults/xgps
+%{_libdir}/X11/app-defaults/xgpsspeed
 %{_datadir}/applications/mandriva-%{name}-clients.desktop
 
 %files python
