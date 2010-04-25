@@ -3,18 +3,19 @@
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
 %define	major		19
+%define	gpsd_major	0
 %define	libname		%mklibname %{name} %{major}
 %define develname	%mklibname %{name} -d
 %define staticname	%mklibname %{name} -s -d
 
 Name: 	 	gpsd
 Summary: 	GPS data translator and GUI
-Version:	2.92
+Version:	2.94
 Release: 	%mkrel 1
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
-#Source1:	gpsd.init
 Source2:	gpsd.sysconfig
 Patch1:		gpsd-2.90-udev.patch
+Patch2:		gpsd-2.94-fix-usb-detection.patch
 URL:		http://gpsd.berlios.de
 License:	BSD
 Group:		Sciences/Geosciences
@@ -73,6 +74,7 @@ and protocol. The daemon will be quiescent when there are no
 clients asking for location information, and copes gracefully when the
 GPS is unplugged and replugged.
 
+
 %package -n	%{develname}
 Summary:	Client libraries in C and Python for talking to a running gpsd or GPS
 Group:		Development/C
@@ -126,8 +128,12 @@ for any applications that interface with gpsd via python.
 %prep
 %setup -q
 %patch1 -p1 -b .udev
+%patch2 -p0 -b .usb
 
 %build
+#needed by p2
+libtoolize --copy --force
+
 %configure2_5x --enable-dbus
 
 %make
@@ -135,7 +141,7 @@ for any applications that interface with gpsd via python.
 %install
 rm -rf %{buildroot}
 
-%makeinstall
+%makeinstall_std
 
 # additional gpsd files
 mkdir -p %{buildroot}%{_libdir}/X11/app-defaults/
@@ -184,6 +190,8 @@ mkdir -p %{buildroot}%{py_platsitedir}
 mv %{buildroot}%{py_puresitedir}/* %{buildroot}%{py_platsitedir}
 %endif
 
+rm -rf %{buildroot}%{_libdir}/*.la
+
 %if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
 %endif
@@ -231,6 +239,7 @@ rm -rf %{buildroot}
 %files -n %{libname}
 %defattr(-,root,root)
 %{_libdir}/libgps.so.%{major}*
+%{_libdir}/libgpsd.so.%{gpsd_major}*
 
 %files -n %{develname}
 %defattr(-,root,root,-)
@@ -238,8 +247,8 @@ rm -rf %{buildroot}
 %{_includedir}/gps.h
 %{_includedir}/libgpsmm.h
 %{_includedir}/gpsd.h
-%{_libdir}/libgps.la
 %{_libdir}/libgps.so
+%{_libdir}/libgpsd.so
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
@@ -249,7 +258,7 @@ rm -rf %{buildroot}
 
 %files -n %{staticname}
 %defattr(-,root,root)
-%{_libdir}/libgps.a
+%{_libdir}/*.a
 
 %files clients
 %defattr(-,root,root,-)
