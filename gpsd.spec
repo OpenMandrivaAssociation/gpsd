@@ -11,7 +11,7 @@
 Name: 	 	gpsd
 Summary: 	GPS data translator and GUI
 Version:	2.94
-Release: 	%mkrel 1
+Release: 	%mkrel 2
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 Source2:	gpsd.sysconfig
 Patch1:		gpsd-2.90-udev.patch
