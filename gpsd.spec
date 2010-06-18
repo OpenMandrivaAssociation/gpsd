@@ -11,7 +11,7 @@
 Name: 	 	gpsd
 Summary: 	GPS data translator and GUI
 Version:	2.94
-Release: 	%mkrel 2
+Release: 	%mkrel 3
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 Source2:	gpsd.sysconfig
 Patch1:		gpsd-2.90-udev.patch
@@ -144,9 +144,8 @@ rm -rf %{buildroot}
 %makeinstall_std
 
 # additional gpsd files
-mkdir -p %{buildroot}%{_libdir}/X11/app-defaults/
-cp xgps %{buildroot}%{_libdir}/X11/app-defaults/xgps
-cp xgpsspeed %{buildroot}%{_libdir}/X11/app-defaults/xgpsspeed
+mkdir -p %{buildroot}%{_datadir}/X11/app-defaults/
+install -m644 xgpsspeed.ad %{buildroot}%{_datadir}/X11/app-defaults/xgpsspeed
 
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
 /usr/sbin/udev_import_usermap --no-modprobe usb gpsd.usermap > %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
@@ -274,8 +273,7 @@ rm -rf %{buildroot}
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/xgpsspeed.1*
-%{_libdir}/X11/app-defaults/xgps
-%{_libdir}/X11/app-defaults/xgpsspeed
+%{_datadir}/X11/app-defaults/xgpsspeed
 %{_datadir}/applications/mandriva-%{name}-clients.desktop
 
 %files python
