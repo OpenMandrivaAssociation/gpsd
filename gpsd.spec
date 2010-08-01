@@ -10,12 +10,12 @@
 
 Name: 	 	gpsd
 Summary: 	GPS data translator and GUI
-Version:	2.94
-Release: 	%mkrel 3
+Version:	2.95
+Release: 	%mkrel 1
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
-Source2:	gpsd.sysconfig
+#Source2:	gpsd.sysconfig
 Patch1:		gpsd-2.90-udev.patch
-Patch2:		gpsd-2.94-fix-usb-detection.patch
+#Patch2:		gpsd-2.94-fix-usb-detection.patch
 URL:		http://gpsd.berlios.de
 License:	BSD
 Group:		Sciences/Geosciences
@@ -128,7 +128,7 @@ for any applications that interface with gpsd via python.
 %prep
 %setup -q
 %patch1 -p1 -b .udev
-%patch2 -p0 -b .usb
+#%patch2 -p0 -b .usb
 
 %build
 #needed by p2
@@ -144,8 +144,8 @@ rm -rf %{buildroot}
 %makeinstall_std
 
 # additional gpsd files
-mkdir -p %{buildroot}%{_datadir}/X11/app-defaults/
-install -m644 xgpsspeed.ad %{buildroot}%{_datadir}/X11/app-defaults/xgpsspeed
+#mkdir -p %{buildroot}%{_datadir}/X11/app-defaults/
+#install -m644 xgpsspeed.ad %{buildroot}%{_datadir}/X11/app-defaults/xgpsspeed
 
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
 /usr/sbin/udev_import_usermap --no-modprobe usb gpsd.usermap > %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
@@ -157,11 +157,11 @@ install -m755 gpsd.hotplug %{buildroot}%{_sysconfdir}/udev/agents.d/usb/gpsd
 
 # init scripts
 %{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/init.d
-%{__install} -p -m 0755 packaging/etc_init.d_gpsd \
+%{__install} -p -m 0755 packaging/rpm/gpsd.init \
 	%{buildroot}%{_sysconfdir}/init.d/gpsd
 
 %{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/sysconfig
-%{__install} -p -m 0644 %{SOURCE2} \
+%{__install} -p -m 0644 packaging/rpm/gpsd.sysconfig \
 	%{buildroot}%{_sysconfdir}/sysconfig/gpsd
 
 mkdir -p %{buildroot}%{_datadir}/applications
@@ -239,6 +239,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_libdir}/libgps.so.%{major}*
 %{_libdir}/libgpsd.so.%{gpsd_major}*
+%{_libdir}/libQgpsmm.so.%{major}*
 
 %files -n %{develname}
 %defattr(-,root,root,-)
@@ -248,6 +249,7 @@ rm -rf %{buildroot}
 %{_includedir}/gpsd.h
 %{_libdir}/libgps.so
 %{_libdir}/libgpsd.so
+%{_libdir}/libQgpsmm.so
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
@@ -273,7 +275,7 @@ rm -rf %{buildroot}
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/xgpsspeed.1*
-%{_datadir}/X11/app-defaults/xgpsspeed
+#%{_datadir}/X11/app-defaults/xgpsspeed
 %{_datadir}/applications/mandriva-%{name}-clients.desktop
 
 %files python
