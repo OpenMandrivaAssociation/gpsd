@@ -30,6 +30,7 @@ BuildRequires:	dbus-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	python
 BuildRequires:	python-devel
+BuildRequires:	bluez-devel
 Requires:	%{name}-python = %{version}-%{release}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -134,10 +135,10 @@ for any applications that interface with gpsd via python.
 #needed by p2
 libtoolize --copy --force
 
-%configure2_5x --enable-dbus
+%configure2_5x --enable-dbus --enable-bluetooth
 
 %make
-										
+
 %install
 rm -rf %{buildroot}
 
@@ -239,7 +240,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_libdir}/libgps.so.%{major}*
 %{_libdir}/libgpsd.so.%{gpsd_major}*
-%{_libdir}/libQgpsmm.so.%{major}*
 
 %files -n %{develname}
 %defattr(-,root,root,-)
@@ -249,7 +249,6 @@ rm -rf %{buildroot}
 %{_includedir}/gpsd.h
 %{_libdir}/libgps.so
 %{_libdir}/libgpsd.so
-%{_libdir}/libQgpsmm.so
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
