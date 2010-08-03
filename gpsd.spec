@@ -20,7 +20,6 @@ License:	BSD
 Group:		Sciences/Geosciences
 Provides:	gps3d
 Obsoletes:	gps3d
-BuildRequires:	X11-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  udev-tools
 BuildRequires:	lesstif-devel
