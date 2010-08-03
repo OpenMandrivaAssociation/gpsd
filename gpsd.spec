@@ -1,10 +1,9 @@
-%define _disable_ld_no_undefined	0
-
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
 %define	major		19
 %define	gpsd_major	0
 %define	libname		%mklibname %{name} %{major}
+%define libqtname	%mklibname Qgpsmm %{major}
 %define develname	%mklibname %{name} -d
 %define staticname	%mklibname %{name} -s -d
 
@@ -15,6 +14,7 @@ Release: 	%mkrel 1
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 #Source2:	gpsd.sysconfig
 Patch1:		gpsd-2.90-udev.patch
+Patch2:		gpsd-2.95-fix-link.patch
 URL:		http://gpsd.berlios.de
 License:	BSD
 Group:		Sciences/Geosciences
@@ -30,6 +30,7 @@ BuildRequires:	dbus-glib-devel
 BuildRequires:	python
 BuildRequires:	python-devel
 BuildRequires:	bluez-devel
+BuildRequires:	qt4-devel
 Requires:	%{name}-python = %{version}-%{release}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -74,6 +75,12 @@ and protocol. The daemon will be quiescent when there are no
 clients asking for location information, and copes gracefully when the
 GPS is unplugged and replugged.
 
+%package -n     %{libqtname}
+Summary:        Qt bindings for gpsd
+Group:          System/Libraries
+
+%description -n %{libqtname}
+This package contains Qt bindings for gpsd.
 
 %package -n	%{develname}
 Summary:	Client libraries in C and Python for talking to a running gpsd or GPS
@@ -81,6 +88,7 @@ Group:		Development/C
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
 Requires:	%{libname} = %{version}
+Requires:	%{libqtname} = %{version}
 Obsoletes:	%{mklibname gpsd 15 -d}
 
 %description -n	%{develname}
@@ -128,6 +136,7 @@ for any applications that interface with gpsd via python.
 %prep
 %setup -q
 %patch1 -p1 -b .udev
+%patch2 -p0 -b .link
 
 %build
 %configure2_5x --enable-dbus --enable-bluetooth
@@ -236,6 +245,10 @@ rm -rf %{buildroot}
 %{_libdir}/libgps.so.%{major}*
 %{_libdir}/libgpsd.so.%{gpsd_major}*
 
+%files -n %{libqtname}
+%defattr(-,root,root)
+%{_libdir}/libQgpsmm.so.%{major}*
+
 %files -n %{develname}
 %defattr(-,root,root,-)
 %doc TODO
@@ -244,6 +257,7 @@ rm -rf %{buildroot}
 %{_includedir}/gpsd.h
 %{_libdir}/libgps.so
 %{_libdir}/libgpsd.so
+%{_libdir}/libQgpsmm.so
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
