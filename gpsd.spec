@@ -15,7 +15,6 @@ Release: 	%mkrel 1
 Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 #Source2:	gpsd.sysconfig
 Patch1:		gpsd-2.90-udev.patch
-#Patch2:		gpsd-2.94-fix-usb-detection.patch
 URL:		http://gpsd.berlios.de
 License:	BSD
 Group:		Sciences/Geosciences
@@ -129,12 +128,8 @@ for any applications that interface with gpsd via python.
 %prep
 %setup -q
 %patch1 -p1 -b .udev
-#%patch2 -p0 -b .usb
 
 %build
-#needed by p2
-libtoolize --copy --force
-
 %configure2_5x --enable-dbus --enable-bluetooth
 
 %make
