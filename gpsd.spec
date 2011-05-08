@@ -15,6 +15,7 @@ Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 #Source2:	gpsd.sysconfig
 Patch1:		gpsd-2.90-udev.patch
 Patch2:		gpsd-2.95-fix-link.patch
+Patch3:		gpsd-2.95-silentmake.patch
 URL:		http://gpsd.berlios.de
 License:	BSD
 Group:		Sciences/Geosciences
@@ -126,7 +127,6 @@ to dump the package version and exit. Additionally, it accepts -rv
 Summary:	Python bindings for gpsd
 Group:		Development/Python
 Requires:	%{libname} = %{version}
-Requires:	python
 
 %description	python
 This package contains the Python bindings for gpsd. It will be needed
@@ -136,6 +136,7 @@ for any applications that interface with gpsd via python.
 %setup -q
 %patch1 -p1 -b .udev
 %patch2 -p0 -b .link
+%patch3 -p1 -b .make
 
 %build
 %configure2_5x --enable-dbus --enable-bluetooth
