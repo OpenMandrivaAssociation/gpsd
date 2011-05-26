@@ -16,6 +16,7 @@ Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
 Patch1:		gpsd-2.90-udev.patch
 Patch2:		gpsd-2.95-fix-link.patch
 Patch3:		gpsd-2.95-silentmake.patch
+Patch4:		gpsd-2.95-qt-build-fixes.patch
 URL:		http://gpsd.berlios.de
 License:	BSD
 Group:		Sciences/Geosciences
@@ -134,9 +135,10 @@ for any applications that interface with gpsd via python.
 
 %prep
 %setup -q
-%patch1 -p1 -b .udev
-%patch2 -p0 -b .link
-%patch3 -p1 -b .make
+%patch1 -p1 -b .udev~
+%patch2 -p0 -b .link~
+%patch3 -p1 -b .make~
+%patch4 -p1 -b .qt~
 
 %build
 %configure2_5x --enable-dbus --enable-bluetooth
