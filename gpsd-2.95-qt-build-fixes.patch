@@ -1,0 +1,24 @@
+--- gpsd-2.95/gpsutils.c.qt~	2011-05-26 23:09:01.382221328 +0200
++++ gpsd-2.95/gpsutils.c	2011-05-26 23:09:03.581193837 +0200
+@@ -17,8 +17,8 @@
+ #include "gpsd.h"
+ 
+ #ifdef USE_QT
+-#include <QDateTime>
+-#include <QStringList>
++#include <QtCore/QDateTime>
++#include <QtCore/QStringList>
+ #endif
+ 
+ #define MONTHSPERYEAR	12	/* months per calendar year */
+--- gpsd-2.95/libgps_core.c.qt~	2011-05-26 23:08:26.484657608 +0200
++++ gpsd-2.95/libgps_core.c	2011-05-26 23:08:44.627430792 +0200
+@@ -33,7 +33,7 @@
+ #include <sys/select.h>
+ #endif
+ #else
+-#include <QTcpSocket>
++#include <QtNetwork/QTcpSocket>
+ #endif /* USE_QT */
+ 
+ #ifdef S_SPLINT_S

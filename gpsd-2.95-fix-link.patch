@@ -1,0 +1,33 @@
+--- Makefile.am.link	2010-08-03 08:24:24.000000000 +0200
++++ Makefile.am	2010-08-03 08:24:51.000000000 +0200
+@@ -260,7 +260,7 @@
+ 
+ nodist_libgpsd_la_SOURCES = packet_names.h ais_json.i
+ libgps_la_LIBADD = $(LIBM) $(LIBC) $(LIBNSL) $(LIBSOCKET) $(LIBPTHREAD)
+-libgpsd_la_LIBADD = $(LIBM) $(LIBC) $(LIBNSL) $(LIBSOCKET) $(LIBPTHREAD) $(BLUEZ_LIBS) libgps.la
++libgpsd_la_LIBADD = $(LIBM) $(LIBC) $(LIBNSL) $(LIBSOCKET) $(LIBPTHREAD) $(BLUEZ_LIBS) $(LIBUSB_LIBS) libgps.la
+ 
+ noinst_SCRIPTS =
+ 
+--- Makefile.in.link	2010-08-03 08:25:12.000000000 +0200
++++ Makefile.in	2010-08-03 08:25:25.000000000 +0200
+@@ -616,7 +616,7 @@
+ @LIBGPSMM_ENABLE_TRUE@libgps_la_LINK = /bin/sh ./libtool --tag=CXX --mode=link g++ $(libgps_la_LDFLAGS) -o $@
+ nodist_libgpsd_la_SOURCES = packet_names.h ais_json.i
+ libgps_la_LIBADD = $(LIBM) $(LIBC) $(LIBNSL) $(LIBSOCKET) $(LIBPTHREAD)
+-libgpsd_la_LIBADD = $(LIBM) $(LIBC) $(LIBNSL) $(LIBSOCKET) $(LIBPTHREAD) $(BLUEZ_LIBS) libgps.la
++libgpsd_la_LIBADD = $(LIBM) $(LIBC) $(LIBNSL) $(LIBSOCKET) $(LIBPTHREAD) $(BLUEZ_LIBS) $(LIBUSB_LIBS) libgps.la
+ noinst_SCRIPTS = $(am__append_6) $(am__append_8)
+ 
+ # Build Python binding
+--- setup.py.link	2010-08-03 08:29:05.000000000 +0200
++++ setup.py	2010-08-03 08:30:44.000000000 +0200
+@@ -74,7 +74,7 @@
+        license="BSD",
+        ext_modules=[
+     	Extension("gps.packet", gpspacket_sources, include_dirs=include_dirs),
+-    	Extension("gps.clienthelpers", ["gpsclient.c", "geoid.c", "gpsdclient.c", "strl.c"], include_dirs=include_dirs)
++    	Extension("gps.clienthelpers", ["gpsclient.c", "geoid.c", "gpsdclient.c", "strl.c"], include_dirs=include_dirs, libraries=['m'])
+         ],
+        packages = ['gps'],
+        scripts = ['gpscat','gpsfake','gpsprof', 'xgps', 'xgpsspeed'],
