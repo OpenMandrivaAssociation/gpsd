@@ -1,0 +1,4 @@
+SUBSYSTEM=="usb", ATTR{idProduct}=="2303", ATTR{idVendor}=="067b", RUN+="/etc/udev/agents.d/usb/gpsd"
+SUBSYSTEM=="usb", ATTR{idProduct}=="6001", ATTR{idVendor}=="0403", RUN+="/etc/udev/agents.d/usb/gpsd"
+SUBSYSTEM=="usb", ATTR{idProduct}=="0100", ATTR{idVendor}=="1163", RUN+="/etc/udev/agents.d/usb/gpsd"
+SUBSYSTEM=="usb", ATTR{idProduct}=="aaa0", ATTR{idVendor}=="067b", RUN+="/etc/udev/agents.d/usb/gpsd"
