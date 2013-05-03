@@ -1,5 +1,5 @@
---- BUILD/gpsd-2.95/Makefile.am.ldflags	2012-08-31 17:23:12.836530055 +0400
-+++ BUILD/gpsd-2.95/Makefile.am	2012-08-31 21:44:09.988528607 +0400
+--- gpsd-2.95/Makefile.am.ldflags	2012-08-31 17:23:12.836530055 +0400
++++ gpsd-2.95/Makefile.am	2012-08-31 21:44:09.988528607 +0400
 @@ -120,7 +120,11 @@ lcdgps_LDADD = $(LIBM) libgps.la -lm
  gpsmon_SOURCES = gpsmon.c monitor_nmea.c monitor_sirf.c \
  	monitor_italk.c monitor_ubx.c monitor_superstar2.c \
