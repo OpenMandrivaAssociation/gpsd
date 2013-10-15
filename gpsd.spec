@@ -10,7 +10,7 @@
 Summary: 	GPS data translator and GUI
 Name: 	 	gpsd
 Version:	2.95
-Release: 	5
+Release: 	6
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://gpsd.berlios.de
@@ -92,6 +92,8 @@ You will need to have gpsd installed for it to work.
 %package	clients
 Summary:	Clients for gpsd with an X interface
 Group:		Sciences/Geosciences
+Requires:	%{name}
+Requires:	%{name}-python
 
 %description	clients
 xgps is a simple test client for gpsd with an X interface. It displays
