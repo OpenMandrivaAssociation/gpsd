@@ -10,7 +10,7 @@
 Summary: 	GPS data translator and GUI
 Name: 	 	gpsd
 Version:	2.95
-Release: 	10
+Release: 	11
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://gpsd.berlios.de
