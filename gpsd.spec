@@ -27,6 +27,7 @@ BuildRequires:  udev
 BuildRequires:	xmlto
 BuildRequires:	lesstif-devel
 BuildRequires:	qt4-devel
+BuildRequires:	scons
 BuildRequires:	pkgconfig(bluez)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(dbus-glib-1)
