@@ -1,7 +1,8 @@
+%define debug_package %{nil}
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
-%define	gpsmaj	19
-%define	major	0
+%define	gpsmaj	21
+%define	major	22
 %define	libgps		%mklibname gps %{gpsmaj}
 %define	libname		%mklibname %{name} %{major}
 %define libqtname	%mklibname Qgpsmm %{gpsmaj}
@@ -9,18 +10,17 @@
 
 Summary: 	GPS data translator and GUI
 Name: 	 	gpsd
-Version:	2.95
-Release: 	12
+Version:	3.10
+Release: 	1
 License:	BSD
 Group:		Sciences/Geosciences
-Url:		http://gpsd.berlios.de
-Source0:	http://prdownload.berlios.de/%{name}/%{name}-%{version}.tar.gz
+Url:		http://catb.org/gpsd/
+Source0:	http://download.savannah.gnu.org/releases/gpsd/gpsd-%{version}.tar.gz
 Source1:	gpsd.rules
 #Source2:	gpsd.sysconfig
+Patch0:		gpsd-3.10-link.patch
 Patch1:		gpsd-2.90-udev.patch
-Patch2:		gpsd-2.95-fix-link.patch
-Patch3:		gpsd-2.95-silentmake.patch
-Patch4:		gpsd.ldflags.patch
+Patch2:		gpsd-3.10-libgps_debuglevel.patch
 
 BuildRequires:  docbook-style-xsl
 BuildRequires:  udev
@@ -119,16 +119,34 @@ for any applications that interface with gpsd via python.
 %apply_patches
 
 %build
-export LDFLAGS="$LDFLAGS -lbluetooth"
-%configure2_5x \
-	--disable-static \
-	--enable-dbus \
-	--enable-bluetooth
+export CC=%{__cc}
+export CXX=%{__cxx}
+export CFLAGS="%{optflags}"
+export CXXFLAGS="%{optflags}"
+%scons prefix=%{_prefix} datadir=%{_datadir} libdir=%{_libdir}
 
-%make
+%if 0
+# Currently fails
+%check
+export CC=%{__cc}
+export CXX=%{__cxx}
+export CFLAGS="%{optflags}"
+export CXXFLAGS="%{optflags}"
+export LD_LIBRARY_PATH=`pwd`:$LD_LIBRARY_PATH
+scons check
+%endif
 
 %install
-%makeinstall_std
+export CC=%{__cc}
+export CXX=%{__cxx}
+export CFLAGS="%{optflags}"
+export CXXFLAGS="%{optflags}"
+export DESTDIR=%{buildroot}
+%scons_install
+
+# udev rules
+install -d -m 0755 %{buildroot}%{_sysconfdir}/udev/rules.d
+install -p -m 0644 gpsd.rules %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
 
 # additional gpsd files
 #mkdir -p %{buildroot}%{_datadir}/X11/app-defaults/
@@ -164,36 +182,29 @@ StartupNotify=true
 Categories=Science;Geology;
 EOF
 
-#remove unpackaged file
-#rm -f %{buildroot}%{_libdir}/python/site-packages/gps.py
-
-#put the python file(s) in the right place (it's arch-dependent)
-
-# fixme: may need to be adapted to include other 64-bit arches, I'm
-# not sure what directory they use - AdamW 2007/07
-%ifarch x86_64
-mkdir -p %{buildroot}%{py_platsitedir}
-mv %{buildroot}%{py_puresitedir}/* %{buildroot}%{py_platsitedir}
-%endif
-
-rm -rf %{buildroot}%{_libdir}/*.la
-
 %files
 %doc README
 %{_sbindir}/gpsd
+%{_sbindir}/gpsdctl
+%{_bindir}/gegps
+%{_bindir}/gps2udp
 %{_bindir}/gpscat
 %{_bindir}/gpsctl
 %{_bindir}/gpsprof
 %{_bindir}/gpsmon
 %{_bindir}/gpsdecode
 %{_mandir}/man8/gpsd.8*
-%{_mandir}/man1/gpsprof.1*
+%{_mandir}/man8/gpsdctl.8*
+%{_mandir}/man8/gpsinit.8*
+%{_mandir}/man1/gegps.1*
 %{_mandir}/man1/gps.1*
+%{_mandir}/man1/gps2udp.1*
+%{_mandir}/man1/gpsprof.1*
 %{_mandir}/man1/gpscat.1*
 %{_mandir}/man1/gpsctl.1*
 %{_mandir}/man1/gpsmon.1*
 %{_mandir}/man1/gpsdecode.1*
-%{_mandir}/man5/rtcm*.5*
+%{_mandir}/man5/gpsd_json.5*
 %{_mandir}/man5/srec.5*
 %{_sysconfdir}/init.d/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
@@ -213,15 +224,16 @@ rm -rf %{buildroot}%{_libdir}/*.la
 %doc TODO
 %{_includedir}/gps.h
 %{_includedir}/libgpsmm.h
-%{_includedir}/gpsd.h
 %{_libdir}/libgps.so
 %{_libdir}/libgpsd.so
 %{_libdir}/libQgpsmm.so
+%{_libdir}/libQgpsmm.prl
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
 %{_mandir}/man3/libgpsmm.3*
 %{_mandir}/man3/libgpsd.3*
+%{_mandir}/man3/libQgpsmm.3*
 %{_bindir}/gpsfake
 
 %files clients
@@ -241,5 +253,4 @@ rm -rf %{buildroot}%{_libdir}/*.la
 %{_datadir}/applications/mandriva-%{name}-clients.desktop
 
 %files python
-%{py_platsitedir}/*
-
+%{py2_platsitedir}/*
