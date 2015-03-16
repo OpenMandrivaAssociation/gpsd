@@ -1,17 +1,17 @@
 %define debug_package %{nil}
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
-%define	gpsmaj	21
-%define	major	22
-%define	libgps		%mklibname gps %{gpsmaj}
-%define	libname		%mklibname %{name} %{major}
-%define libqtname	%mklibname Qgpsmm %{gpsmaj}
-%define devname		%mklibname %{name} -d
+%define gpsmaj 21
+%define major 22
+%define libgps %mklibname gps %{gpsmaj}
+%define libname %mklibname %{name} %{major}
+%define libqtname %mklibname Qgpsmm %{gpsmaj}
+%define devname %mklibname %{name} -d
 
-Summary: 	GPS data translator and GUI
-Name: 	 	gpsd
-Version:	3.10
-Release: 	2
+Summary:	GPS data translator and GUI
+Name:		gpsd
+Version:	3.14
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
@@ -22,8 +22,8 @@ Patch0:		gpsd-3.10-link.patch
 Patch1:		gpsd-2.90-udev.patch
 Patch2:		gpsd-3.10-libgps_debuglevel.patch
 
-BuildRequires:  docbook-style-xsl
-BuildRequires:  udev
+BuildRequires:	docbook-style-xsl
+BuildRequires:	udev
 BuildRequires:	xmlto
 BuildRequires:	lesstif-devel
 BuildRequires:	qt4-devel
@@ -31,7 +31,7 @@ BuildRequires:	scons
 BuildRequires:	pkgconfig(bluez)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(dbus-glib-1)
-BuildRequires:  pkgconfig(ncurses)
+BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	pkgconfig(python)
 Requires:	%{name}-python = %{version}-%{release}
 
@@ -69,9 +69,9 @@ Obsoletes:	%{_lib}gpsd19 < 2.95-5
 %description -n	%{libname}
 This package contains a shared library for %{name}.
 
-%package -n     %{libqtname}
-Summary:        Qt bindings for gpsd
-Group:          System/Libraries
+%package -n %{libqtname}
+Summary:	Qt bindings for gpsd
+Group:		System/Libraries
 
 %description -n %{libqtname}
 This package contains Qt bindings for gpsd.
@@ -90,7 +90,7 @@ This package provides C header files for the gpsd shared libraries
 that manage access to a GPS for applications; also Python modules.
 You will need to have gpsd installed for it to work.
 
-%package	clients
+%package clients
 Summary:	Clients for gpsd with an X interface
 Group:		Sciences/Geosciences
 Requires:	%{name}
@@ -106,7 +106,7 @@ It accepts an -h option and optional argument as for gps, or a -v option
 to dump the package version and exit. Additionally, it accepts -rv
 (reverse video) and -nc (needle color) options.
 
-%package	python
+%package python
 Summary:	Python bindings for gpsd
 Group:		Development/Python
 Requires:	%{libname} = %{version}
