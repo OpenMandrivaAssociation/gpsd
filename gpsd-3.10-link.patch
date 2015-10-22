@@ -5,7 +5,7 @@
      python_env.Replace(SHLINKFLAGS=[],
                         LDFLAGS=ldflags,
 -                       LINK = ldshared,
-+                       LINK = ldshared + " -lpython2.7",
++                       LINK = ldshared + " -lpython2.7 -lm",
                         SHLIBPREFIX="",
                         SHLIBSUFFIX=so_ext,
                         CPPPATH=[includepy],

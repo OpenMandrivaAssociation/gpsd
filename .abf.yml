@@ -1,2 +1,4 @@
-sources:
+removed_sources:
   gpsd-3.14.tar.gz: ffd71eea936e06e6f26c1cd24496a0345c8d014f
+sources:
+  gpsd-3.15.tar.gz: 75ec3578e91815f0ac69a0ad79c8e47a23d8ac85

@@ -1,17 +1,20 @@
 %define debug_package %{nil}
 %define _hotplugdir	%{_prefix}/lib/hotplug
 
-%define gpsmaj 21
+%define _disable_lto 1
+%define _disable_rebuild_configure 1
+%define _disable_ld_no_undefined 1
+
+%define gpsmaj 22
 %define major 22
 %define libgps %mklibname gps %{gpsmaj}
-%define libname %mklibname %{name} %{major}
 %define libqtname %mklibname Qgpsmm %{gpsmaj}
 %define devname %mklibname %{name} -d
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.14
-Release:	3
+Version:	3.15
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
@@ -20,7 +23,6 @@ Source1:	gpsd.rules
 #Source2:	gpsd.sysconfig
 Patch0:		gpsd-3.10-link.patch
 Patch1:		gpsd-2.90-udev.patch
-Patch2:		gpsd-3.10-libgps_debuglevel.patch
 
 BuildRequires:	docbook-style-xsl
 BuildRequires:	udev
@@ -61,14 +63,6 @@ Conflicts:	%{_lib}gpsd19 < 2.95-5
 %description -n	%{libgps}
 This package contains a shared library for %{name}.
 
-%package -n	%{libname}
-Summary:	Libraries for gpsd
-Group:		System/Libraries
-Obsoletes:	%{_lib}gpsd19 < 2.95-5
-
-%description -n	%{libname}
-This package contains a shared library for %{name}.
-
 %package -n %{libqtname}
 Summary:	Qt bindings for gpsd
 Group:		System/Libraries
@@ -81,7 +75,6 @@ Summary:	Client libraries in C and Python for talking to a running gpsd or GPS
 Group:		Development/C
 Provides:	%{name}-devel = %{version}-%{release}
 Requires:	%{libgps} = %{version}
-Requires:	%{libname} = %{version}
 Requires:	%{libqtname} = %{version}
 Obsoletes:	%{_lib}gpsd-static-devel < 2.95-5
 
@@ -109,7 +102,6 @@ to dump the package version and exit. Additionally, it accepts -rv
 %package python
 Summary:	Python bindings for gpsd
 Group:		Development/Python
-Requires:	%{libname} = %{version}
 
 %description	python
 This package contains the Python bindings for gpsd. It will be needed
@@ -118,12 +110,11 @@ for any applications that interface with gpsd via python.
 %prep
 %setup -q
 %apply_patches
+sed -i 's/ncurses5-config/ncurses6-config/' SConstruct
+sed -i 's/ncursesw5-config/ncursesw6-config/' SConstruct
 
 %build
-export CC=%{__cc}
-export CXX=%{__cxx}
-export CFLAGS="%{optflags}"
-export CXXFLAGS="%{optflags}"
+%setup_compile_flags
 %scons prefix=%{_prefix} datadir=%{_datadir} libdir=%{_libdir}
 
 %if 0
@@ -140,8 +131,6 @@ scons check
 %install
 export CC=%{__cc}
 export CXX=%{__cxx}
-export CFLAGS="%{optflags}"
-export CXXFLAGS="%{optflags}"
 export DESTDIR=%{buildroot}
 %scons_install
 
@@ -194,6 +183,8 @@ EOF
 %{_bindir}/gpsprof
 %{_bindir}/gpsmon
 %{_bindir}/gpsdecode
+%{_bindir}/ntpshmmon
+%{_mandir}/man1/ntpshmmon.1.xz
 %{_mandir}/man8/gpsd.8*
 %{_mandir}/man8/gpsdctl.8*
 %{_mandir}/man8/gpsinit.8*
@@ -215,9 +206,6 @@ EOF
 %files -n %{libgps}
 %{_libdir}/libgps.so.%{gpsmaj}*
 
-%files -n %{libname}
-%{_libdir}/libgpsd.so.%{major}*
-
 %files -n %{libqtname}
 %{_libdir}/libQgpsmm.so.%{gpsmaj}*
 
@@ -226,14 +214,12 @@ EOF
 %{_includedir}/gps.h
 %{_includedir}/libgpsmm.h
 %{_libdir}/libgps.so
-%{_libdir}/libgpsd.so
 %{_libdir}/libQgpsmm.so
 %{_libdir}/libQgpsmm.prl
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
 %{_mandir}/man3/libgpsmm.3*
-%{_mandir}/man3/libgpsd.3*
 %{_mandir}/man3/libQgpsmm.3*
 %{_bindir}/gpsfake
 
