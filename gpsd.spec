@@ -5,30 +5,33 @@
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
-%define gpsmaj 22
-%define major 22
+%define gpsmaj 23
+%define major 23
 %define libgps %mklibname gps %{gpsmaj}
 %define libqtname %mklibname Qgpsmm %{gpsmaj}
 %define devname %mklibname %{name} -d
 
+%bcond_with qt
+
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.15
-Release:	3
+Version:	3.17
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
 Source0:	http://download.savannah.gnu.org/releases/gpsd/gpsd-%{version}.tar.gz
 Source1:	gpsd.rules
 #Source2:	gpsd.sysconfig
-Patch0:		gpsd-3.10-link.patch
+Patch0:		gpsd-3.17-link.patch
 Patch1:		gpsd-2.90-udev.patch
 
 BuildRequires:	docbook-style-xsl
 BuildRequires:	udev
 BuildRequires:	xmlto
-BuildRequires:	lesstif-devel
+%if %{with qt}
 BuildRequires:	qt4-devel
+%endif
 BuildRequires:	scons
 BuildRequires:	pkgconfig(bluez)
 BuildRequires:	pkgconfig(dbus-1)
@@ -63,6 +66,7 @@ Conflicts:	%{_lib}gpsd19 < 2.95-5
 %description -n	%{libgps}
 This package contains a shared library for %{name}.
 
+%if %{with qt}
 %package -n %{libqtname}
 Summary:	Qt bindings for gpsd
 Group:		System/Libraries
@@ -70,12 +74,16 @@ Group:		System/Libraries
 %description -n %{libqtname}
 This package contains Qt bindings for gpsd.
 
+%endif
+
 %package -n	%{devname}
 Summary:	Client libraries in C and Python for talking to a running gpsd or GPS
 Group:		Development/C
 Provides:	%{name}-devel = %{version}-%{release}
 Requires:	%{libgps} = %{version}
+%if %{with qt}
 Requires:	%{libqtname} = %{version}
+%endif
 Obsoletes:	%{_lib}gpsd-static-devel < 2.95-5
 
 %description -n	%{devname}
@@ -115,7 +123,11 @@ sed -i 's/ncursesw5-config/ncursesw6-config/' SConstruct
 
 %build
 %setup_compile_flags
-%scons prefix=%{_prefix} datadir=%{_datadir} libdir=%{_libdir}
+%scons prefix=%{_prefix} datadir=%{_datadir} libdir=%{_libdir} \
+%if %{without qt}
+   qt=no
+%endif
+
 
 %if 0
 # Currently fails
@@ -206,21 +218,26 @@ EOF
 %files -n %{libgps}
 %{_libdir}/libgps.so.%{gpsmaj}*
 
+%if %{with qt}
 %files -n %{libqtname}
 %{_libdir}/libQgpsmm.so.%{gpsmaj}*
+%endif
 
 %files -n %{devname}
 %doc TODO
 %{_includedir}/gps.h
 %{_includedir}/libgpsmm.h
 %{_libdir}/libgps.so
+%if %{with qt}
 %{_libdir}/libQgpsmm.so
 %{_libdir}/libQgpsmm.prl
+%{_mandir}/man3/libQgpsmm.3*
+%endif
+%{_mandir}/man3/libQgpsmm.3*
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
 %{_mandir}/man3/libgpsmm.3*
-%{_mandir}/man3/libQgpsmm.3*
 %{_bindir}/gpsfake
 
 %files clients
@@ -229,6 +246,7 @@ EOF
 %{_bindir}/gpspipe
 %{_bindir}/xgpsspeed
 %{_bindir}/gpxlogger
+%{_bindir}/ppscheck
 %{_bindir}/lcdgps
 %{_mandir}/man1/xgps.1*
 %{_mandir}/man1/cgps.1*
@@ -236,8 +254,10 @@ EOF
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/xgpsspeed.1*
+%{_mandir}/man1/gpxlogger.1*
+%{_mandir}/man8/ppscheck.8*
 #%{_datadir}/X11/app-defaults/xgpsspeed
 %{_datadir}/applications/mandriva-%{name}-clients.desktop
 
 %files python
-%{py2_platsitedir}/*
+%{py3_puresitedir}/*
