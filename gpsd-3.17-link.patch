@@ -5,7 +5,7 @@
      python_env.Replace(SHLINKFLAGS=[],
                         LDFLAGS=python_config['LDFLAGS'],
 -                       LINK=ldshared,
-+                       LINK=ldshared + " -lpython3.4m -lm",
++                       LINK=ldshared + " -lpython3.7m -lm",
                         SHLIBPREFIX="",
                         SHLIBSUFFIX=python_config['SO'],
                         CPPPATH=[python_config['INCLUDEPY']],
