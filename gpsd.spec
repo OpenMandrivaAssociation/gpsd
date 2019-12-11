@@ -16,7 +16,7 @@
 Summary:	GPS data translator and GUI
 Name:		gpsd
 Version:	3.17
-Release:	5
+Release:	6
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
