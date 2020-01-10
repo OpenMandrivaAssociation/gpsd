@@ -117,7 +117,7 @@ for any applications that interface with gpsd via python.
 
 %prep
 %setup -q
-%apply_patches
+%autopatch -p1
 sed -i 's/ncurses5-config/ncurses6-config/' SConstruct
 sed -i 's/ncursesw5-config/ncursesw6-config/' SConstruct
 
