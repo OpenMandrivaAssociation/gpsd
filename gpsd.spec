@@ -12,6 +12,11 @@
 %define devname %mklibname %{name} -d
 
 %bcond_with qt
+%ifarch riscv64
+%bcond_with gtk
+%else
+%bcond_without gtk
+%endif
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
@@ -33,10 +38,12 @@ BuildRequires:	xmlto
 BuildRequires:	qt4-devel
 %endif
 BuildRequires:	scons
+%if %{with gtk}
 BuildRequires:	python-serial
 BuildRequires:	python-cairo
 BuildRequires:	python-gi
 BuildRequires:	pkgconfig(gtk+-3.0)
+%endif
 BuildRequires:	pkgconfig(bluez)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(dbus-glib-1)
@@ -250,19 +257,21 @@ EOF
 %{_bindir}/gpsfake
 
 %files clients
+%if %{with gtk}
 %{_bindir}/xgps
+%{_bindir}/xgpsspeed
+%{_mandir}/man1/xgps.1*
+%{_mandir}/man1/xgpsspeed.1*
+%endif
 %{_bindir}/cgps
 %{_bindir}/gpspipe
-%{_bindir}/xgpsspeed
 %{_bindir}/gpxlogger
 %{_bindir}/ppscheck
 %{_bindir}/lcdgps
-%{_mandir}/man1/xgps.1*
 %{_mandir}/man1/cgps.1*
 #{_mandir}/man1/cgpxlogger.1*
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
-%{_mandir}/man1/xgpsspeed.1*
 %{_mandir}/man1/gpxlogger.1*
 %{_mandir}/man8/ppscheck.8*
 #%{_datadir}/X11/app-defaults/xgpsspeed
