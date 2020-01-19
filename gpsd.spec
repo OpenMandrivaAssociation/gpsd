@@ -5,8 +5,8 @@
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
-%define gpsmaj 23
-%define major 23
+%define gpsmaj 25
+%define major 25
 %define libgps %mklibname gps %{gpsmaj}
 %define libqtname %mklibname Qgpsmm %{gpsmaj}
 %define devname %mklibname %{name} -d
@@ -15,8 +15,8 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.17
-Release:	6
+Version:	3.20
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
@@ -33,6 +33,10 @@ BuildRequires:	xmlto
 BuildRequires:	qt4-devel
 %endif
 BuildRequires:	scons
+BuildRequires:	python-serial
+BuildRequires:	python-cairo
+BuildRequires:	python-gi
+BuildRequires:	pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(bluez)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(dbus-glib-1)
@@ -122,8 +126,8 @@ sed -i 's/ncurses5-config/ncurses6-config/' SConstruct
 sed -i 's/ncursesw5-config/ncursesw6-config/' SConstruct
 
 %build
-%setup_compile_flags
-%scons prefix=%{_prefix} datadir=%{_datadir} libdir=%{_libdir} \
+%set_build_flags
+%scons prefix=%{_prefix} datadir=%{_datadir} libdir=%{_libdir} python_libdir=%{py3_puresitedir} \
 %if %{without qt}
    qt=no
 %endif
@@ -185,10 +189,10 @@ Categories=Science;Geology;
 EOF
 
 %files
-%doc README
 %{_sbindir}/gpsd
 %{_sbindir}/gpsdctl
 %{_bindir}/gegps
+%{_bindir}/gpsrinex
 %{_bindir}/gps2udp
 %{_bindir}/gpscat
 %{_bindir}/gpsctl
@@ -196,7 +200,9 @@ EOF
 %{_bindir}/gpsmon
 %{_bindir}/gpsdecode
 %{_bindir}/ntpshmmon
-%{_mandir}/man1/ntpshmmon.1.xz
+%{_bindir}/ubxtool
+%{_bindir}/zerk
+%{_mandir}/man1/ntpshmmon.1.*
 %{_mandir}/man8/gpsd.8*
 %{_mandir}/man8/gpsdctl.8*
 %{_mandir}/man8/gpsinit.8*
@@ -206,6 +212,9 @@ EOF
 %{_mandir}/man1/gpsprof.1*
 %{_mandir}/man1/gpscat.1*
 %{_mandir}/man1/gpsctl.1*
+%{_mandir}/man1/gpsrinex.1.zst
+%{_mandir}/man1/ubxtool.1.zst
+%{_mandir}/man1/zerk.1.zst
 %{_mandir}/man1/gpsmon.1*
 %{_mandir}/man1/gpsdecode.1*
 %{_mandir}/man5/gpsd_json.5*
@@ -250,7 +259,7 @@ EOF
 %{_bindir}/lcdgps
 %{_mandir}/man1/xgps.1*
 %{_mandir}/man1/cgps.1*
-#%{_mandir}/man1/cgpxlogger.1*
+#{_mandir}/man1/cgpxlogger.1*
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/xgpsspeed.1*
