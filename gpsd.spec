@@ -216,8 +216,8 @@ EOF
 %files
 %{_sbindir}/gpsd
 %{_sbindir}/gpsdctl
+%{_sbindir}/gpsinit
 %{_bindir}/gegps
-%{_bindir}/gpsinit
 %{_bindir}/gpsrinex
 %{_bindir}/gps2udp
 %{_bindir}/gpscat
