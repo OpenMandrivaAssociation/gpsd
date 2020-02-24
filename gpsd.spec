@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define _hotplugdir	%{_prefix}/lib/hotplug
+%define _hotplugdir %{_prefix}/lib/hotplug
 
 %define _disable_lto 1
 %define _disable_rebuild_configure 1
@@ -7,11 +7,11 @@
 
 %define gpsmaj 25
 %define major 25
-%define libgps %mklibname gps %{gpsmaj}
+%define libname %mklibname gps %{gpsmaj}
 %define libqtname %mklibname Qgpsmm %{gpsmaj}
 %define devname %mklibname %{name} -d
 
-%bcond_with qt
+%bcond_without qt
 %ifarch riscv64
 %bcond_with gtk
 %else
@@ -21,23 +21,26 @@
 Summary:	GPS data translator and GUI
 Name:		gpsd
 Version:	3.20
-Release:	1
+Release:	2
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
 Source0:	http://download.savannah.gnu.org/releases/gpsd/gpsd-%{version}.tar.gz
 Source1:	gpsd.rules
-#Source2:	gpsd.sysconfig
+Source2:	gpsd.sysconfig
 Patch0:		gpsd-3.17-link.patch
 Patch1:		gpsd-2.90-udev.patch
 
 BuildRequires:	docbook-style-xsl
 BuildRequires:	udev
 BuildRequires:	xmlto
-%if %{with qt}
-BuildRequires:	qt4-devel
-%endif
 BuildRequires:	scons
+%if %{with qt}
+BuildRequires:	pkgconfig(Qt5Core)
+BuildRequires:	pkgconfig(Qt5Gui)
+BuildRequires:	pkgconfig(Qt5Network)
+BuildRequires:	pkgconfig(Qt5Widgets)
+%endif
 %if %{with gtk}
 BuildRequires:	python-serial
 BuildRequires:	python-cairo
@@ -49,7 +52,10 @@ BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	pkgconfig(python3)
-Requires:	%{name}-python = %{version}-%{release}
+BuildRequires:	systemd-macros
+Requires:	%{name}-python >= %{EVRD}
+Requires:	%{libname} >= %{EVRD}
+%{?systemd_requires}
 
 %description
 gpsd is a service daemon that mediates access to a GPS sensor
@@ -69,12 +75,12 @@ and protocol. The daemon will be quiescent when there are no
 clients asking for location information, and copes gracefully when the
 GPS is unplugged and replugged.
 
-%package -n	%{libgps}
+%package -n %{libname}
 Summary:	Libraries for gpsd
 Group:		System/Libraries
 Conflicts:	%{_lib}gpsd19 < 2.95-5
 
-%description -n	%{libgps}
+%description -n %{libname}
 This package contains a shared library for %{name}.
 
 %if %{with qt}
@@ -84,20 +90,19 @@ Group:		System/Libraries
 
 %description -n %{libqtname}
 This package contains Qt bindings for gpsd.
-
 %endif
 
-%package -n	%{devname}
+%package -n %{devname}
 Summary:	Client libraries in C and Python for talking to a running gpsd or GPS
 Group:		Development/C
-Provides:	%{name}-devel = %{version}-%{release}
-Requires:	%{libgps} = %{version}
+Provides:	%{name}-devel = %{EVRD}
+Requires:	%{libname} = %{EVRD}
 %if %{with qt}
-Requires:	%{libqtname} = %{version}
+Requires:	%{libqtname} = %{EVRD}
 %endif
 Obsoletes:	%{_lib}gpsd-static-devel < 2.95-5
 
-%description -n	%{devname}
+%description -n %{devname}
 This package provides C header files for the gpsd shared libraries
 that manage access to a GPS for applications; also Python modules.
 You will need to have gpsd installed for it to work.
@@ -108,7 +113,7 @@ Group:		Sciences/Geosciences
 Requires:	%{name}
 Requires:	%{name}-python
 
-%description	clients
+%description clients
 xgps is a simple test client for gpsd with an X interface. It displays
 current GPS position/time/velocity information and (for GPSes that
 support the feature) the locations of accessible satellites.
@@ -121,8 +126,9 @@ to dump the package version and exit. Additionally, it accepts -rv
 %package python
 Summary:	Python bindings for gpsd
 Group:		Development/Python
+Requires:	libname = %{EVRD}
 
-%description	python
+%description python
 This package contains the Python bindings for gpsd. It will be needed
 for any applications that interface with gpsd via python.
 
@@ -131,13 +137,29 @@ for any applications that interface with gpsd via python.
 %autopatch -p1
 sed -i 's/ncurses5-config/ncurses6-config/' SConstruct
 sed -i 's/ncursesw5-config/ncursesw6-config/' SConstruct
+# fix paths in systemd unit files
+sed -i 's|/usr/local/sbin|%{_sbindir}|' systemd/*.service
+# fix systemd path
+sed -i 's|systemd_dir =.*|systemd_dir = '\'%{_unitdir}\''|' SConstruct
+# don't try reloading systemd when installing in the build root
+sed -i 's|systemctl daemon-reload|true|' SConstruct
+# don't set RPATH
+sed -i 's|env.Prepend.*RPATH.*|pass #\0|' SConstruct
 
 %build
 %set_build_flags
-%scons prefix=%{_prefix} datadir=%{_datadir} libdir=%{_libdir} python_libdir=%{py3_puresitedir} \
+%scons \
+	prefix=%{_prefix} \
+	datadir=%{_datadir} \
+	libdir=%{_libdir} \
+	target_python=python3 \
+	python_libdir=%{py3_puresitedir} \
 %if %{without qt}
-   qt=no
+	qt=no \
 %endif
+	systemd=yes \
+	qt_versioned=5 \
+	dbus_export=yes
 
 
 %if 0
@@ -147,23 +169,23 @@ export CC=%{__cc}
 export CXX=%{__cxx}
 export CFLAGS="%{optflags}"
 export CXXFLAGS="%{optflags}"
-export LD_LIBRARY_PATH=`pwd`:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$(pwd):$LD_LIBRARY_PATH
 scons check
 %endif
 
 %install
+%set_build_flags
 export CC=%{__cc}
 export CXX=%{__cxx}
 export DESTDIR=%{buildroot}
-%scons_install
+STRIP=/bin/true %scons_install systemd_install udev-install
 
 # udev rules
 install -d -m 0755 %{buildroot}%{_sysconfdir}/udev/rules.d
 install -p -m 0644 gpsd.rules %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
 
-# additional gpsd files
-#mkdir -p %{buildroot}%{_datadir}/X11/app-defaults/
-#install -m644 xgpsspeed.ad %{buildroot}%{_datadir}/X11/app-defaults/xgpsspeed
+install -d -m 0755 %{buildroot}%{_sysconfdir}/sysconfig
+install -p -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/sysconfig/gpsd
 
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
 install -m644 %{SOURCE1} %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
@@ -171,28 +193,24 @@ install -m644 %{SOURCE1} %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
 mkdir -p %{buildroot}%{_sysconfdir}/udev/agents.d/usb
 install -m755 gpsd.hotplug %{buildroot}%{_sysconfdir}/udev/agents.d/usb/gpsd
 
-#install -m755 gps.py -D %{buildroot}%{_libdir}/python${PYVERSION}/site-packages/gps.py
+# Install the .desktop files
+desktop-file-install \
+    --dir %{buildroot}%{_datadir}/applications \
+    packaging/X11/xgps.desktop
+desktop-file-install \
+    --dir %{buildroot}%{_datadir}/applications \
+    packaging/X11/xgpsspeed.desktop
 
-# init scripts
-install -d -m 0755 %{buildroot}%{_sysconfdir}/init.d
-install -p -m 0755 packaging/rpm/gpsd.init \
-	%{buildroot}%{_sysconfdir}/init.d/gpsd
+# Install logo icon for .desktop files
+%{__install} -d -m 0755 %{buildroot}%{_datadir}/gpsd
+%{__install} -p -m 0644 packaging/X11/gpsd-logo.png %{buildroot}%{_datadir}/gpsd/gpsd-logo.png
 
-install -d -m 0755 %{buildroot}%{_sysconfdir}/sysconfig
-install -p -m 0644 packaging/rpm/gpsd.sysconfig \
-	%{buildroot}%{_sysconfdir}/sysconfig/gpsd
+# Missed in scons install 
+%{__install} -p -m 0755 gpsinit %{buildroot}%{_sbindir}
 
-mkdir -p %{buildroot}%{_datadir}/applications
-cat > %{buildroot}%{_datadir}/applications/mandriva-%{name}-clients.desktop << EOF
-[Desktop Entry]
-Name=XGPS
-Comment=XGPS
-Exec=xgps
-Icon=communications_section
-Terminal=false
-Type=Application
-StartupNotify=true
-Categories=Science;Geology;
+install -d %{buildroot}%{_presetdir}
+cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
+enable gpsd.socket
 EOF
 
 %files
@@ -230,8 +248,12 @@ EOF
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_sysconfdir}/udev/agents.d/usb/gpsd
 %{_sysconfdir}/udev/rules.d/70-gpsd.rules
+%{_presetdir}/86-%{name}.preset
+%{_unitdir}/gpsd.service
+%{_unitdir}/gpsd.socket
+%{_unitdir}/gpsdctl@.service
 
-%files -n %{libgps}
+%files -n %{libname}
 %{_libdir}/libgps.so.%{gpsmaj}*
 
 %if %{with qt}
@@ -269,13 +291,13 @@ EOF
 %{_bindir}/ppscheck
 %{_bindir}/lcdgps
 %{_mandir}/man1/cgps.1*
-#{_mandir}/man1/cgpxlogger.1*
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/gpxlogger.1*
 %{_mandir}/man8/ppscheck.8*
-#%{_datadir}/X11/app-defaults/xgpsspeed
-%{_datadir}/applications/mandriva-%{name}-clients.desktop
+%{_datadir}/applications/*.desktop
+%dir %{_datadir}/gpsd
+%{_datadir}/gpsd/gpsd-logo.png
 
 %files python
 %{py3_puresitedir}/*
