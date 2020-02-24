@@ -217,6 +217,7 @@ EOF
 %{_sbindir}/gpsd
 %{_sbindir}/gpsdctl
 %{_bindir}/gegps
+%{_bindir}/gpsinit
 %{_bindir}/gpsrinex
 %{_bindir}/gps2udp
 %{_bindir}/gpscat
@@ -246,7 +247,7 @@ EOF
 %{_mandir}/man5/srec.5*
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_sysconfdir}/udev/agents.d/usb/gpsd
-%{_sysconfdir}/udev/rules.d/70-gpsd.rules
+%{_sysconfdir}/udev/rules.d/*.rules
 %{_presetdir}/86-%{name}.preset
 %{_unitdir}/gpsd.service
 %{_unitdir}/gpsd.socket
@@ -270,7 +271,6 @@ EOF
 %{_libdir}/libQgpsmm.prl
 %{_mandir}/man3/libQgpsmm.3*
 %endif
-%{_mandir}/man3/libQgpsmm.3*
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/gpsfake.1*
 %{_mandir}/man3/libgps.3*
