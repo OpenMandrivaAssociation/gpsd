@@ -205,7 +205,7 @@ desktop-file-install \
 %{__install} -d -m 0755 %{buildroot}%{_datadir}/gpsd
 %{__install} -p -m 0644 packaging/X11/gpsd-logo.png %{buildroot}%{_datadir}/gpsd/gpsd-logo.png
 
-# Missed in scons install 
+# Missed in scons install
 %{__install} -p -m 0755 gpsinit %{buildroot}%{_sbindir}
 
 install -d %{buildroot}%{_presetdir}
@@ -244,7 +244,6 @@ EOF
 %{_mandir}/man1/gpsdecode.1*
 %{_mandir}/man5/gpsd_json.5*
 %{_mandir}/man5/srec.5*
-%{_sysconfdir}/init.d/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_sysconfdir}/udev/agents.d/usb/gpsd
 %{_sysconfdir}/udev/rules.d/70-gpsd.rules
