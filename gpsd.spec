@@ -248,6 +248,7 @@ EOF
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_sysconfdir}/udev/agents.d/usb/gpsd
 %{_sysconfdir}/udev/rules.d/*.rules
+%{_udevrulesdir}/*.rules
 %{_presetdir}/86-%{name}.preset
 %{_unitdir}/gpsd.service
 %{_unitdir}/gpsd.socket
