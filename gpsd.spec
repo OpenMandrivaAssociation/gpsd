@@ -126,7 +126,7 @@ to dump the package version and exit. Additionally, it accepts -rv
 %package python
 Summary:	Python bindings for gpsd
 Group:		Development/Python
-Requires:	libname = %{EVRD}
+Requires:	%{libname} = %{EVRD}
 
 %description python
 This package contains the Python bindings for gpsd. It will be needed
