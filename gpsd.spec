@@ -5,8 +5,8 @@
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
-%define gpsmaj 25
-%define major 25
+%define gpsmaj 27
+%define major 27
 %define libname %mklibname gps %{gpsmaj}
 %define libqtname %mklibname Qgpsmm %{gpsmaj}
 %define devname %mklibname %{name} -d
@@ -20,15 +20,14 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.20
-Release:	3
+Version:	3.21
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
 Source0:	http://download.savannah.gnu.org/releases/gpsd/gpsd-%{version}.tar.gz
 Source1:	gpsd.rules
 Source2:	gpsd.sysconfig
-Patch0:		gpsd-3.17-link.patch
 Patch1:		gpsd-2.90-udev.patch
 
 BuildRequires:	docbook-style-xsl
@@ -152,6 +151,7 @@ sed -i 's|env.Prepend.*RPATH.*|pass #\0|' SConstruct
 	prefix=%{_prefix} \
 	datadir=%{_datadir} \
 	libdir=%{_libdir} \
+	rundir=/run \
 	target_python=python3 \
 	python_libdir=%{py3_puresitedir} \
 %if %{without qt}
@@ -213,16 +213,6 @@ cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
 enable gpsd.socket
 EOF
 
-%post
-%systemd_post gpsd.socket
-
-%preun
-%systemd_preun gpsd.socket
-
-%postun
-# Don't restart the service
-%systemd_postun gpsd.socket
-
 %files
 %{_sbindir}/gpsd
 %{_sbindir}/gpsdctl
@@ -263,6 +253,11 @@ EOF
 %{_unitdir}/gpsd.service
 %{_unitdir}/gpsd.socket
 %{_unitdir}/gpsdctl@.service
+%dir %{_datadir}/gpsd
+%{_datadir}/gpsd/icons
+%doc %{_datadir}/gpsd/doc
+
+%libpackage gpsdpacket %{major}
 
 %files -n %{libname}
 %{_libdir}/libgps.so.%{gpsmaj}*
@@ -277,6 +272,7 @@ EOF
 %{_includedir}/gps.h
 %{_includedir}/libgpsmm.h
 %{_libdir}/libgps.so
+%{_libdir}/libgpsdpacket.so
 %if %{with qt}
 %{_libdir}/libQgpsmm.so
 %{_libdir}/libQgpsmm.prl

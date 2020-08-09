@@ -1,6 +1,7 @@
---- gpsd-2.28/gpsd.usermap.udev	2005-06-15 01:52:36.000000000 +0200
-+++ gpsd-2.28/gpsd.usermap	2005-08-27 13:32:54.000000000 +0200
-@@ -7,10 +7,10 @@
+diff -up gpsd-3.21/gpsd.usermap.1~ gpsd-3.21/gpsd.usermap
+--- gpsd-3.21/gpsd.usermap.1~	2020-08-10 00:02:56.016542772 +0200
++++ gpsd-3.21/gpsd.usermap	2020-08-10 00:03:23.208105844 +0200
+@@ -10,12 +10,12 @@
  # look at the device that just went active, because it might be a GPS.
  #
  # The Prolific Technology 2303 (commonly in tandem with SiRF chips)
@@ -15,3 +16,5 @@
  # PS-360 OEM (Microsoft GPS sold with Street and Trips 2005)
 -gpsd.hotplug 0x0003 0x067b 0xaaa0 0x0000 0x0000 0x00 0x00 0x00 0x00 0x00 0x00 0x00000000
 +gpsd 0x0003 0x067b 0xaaa0 0x0000 0x0000 0x00 0x00 0x00 0x00 0x00 0x00 0x00000000
+ 
+ # vim: set expandtab shiftwidth=4
