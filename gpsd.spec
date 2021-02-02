@@ -21,7 +21,7 @@
 Summary:	GPS data translator and GUI
 Name:		gpsd
 Version:	3.21
-Release:	1
+Release:	2
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
@@ -212,6 +212,15 @@ install -d %{buildroot}%{_presetdir}
 cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
 enable gpsd.socket
 EOF
+
+%post
+%systemd_post %{name}.socket
+
+%preun
+%systemd_preun %{name}.socket
+
+%postun
+%systemd_postun_with_restart %{name}.socket
 
 %files
 %{_sbindir}/gpsd
