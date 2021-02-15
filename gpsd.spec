@@ -5,8 +5,8 @@
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
-%define gpsmaj 27
-%define major 27
+%define gpsmaj 28
+%define major 28
 %define libname %mklibname gps %{gpsmaj}
 %define libqtname %mklibname Qgpsmm %{gpsmaj}
 %define devname %mklibname %{name} -d
@@ -20,8 +20,8 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.21
-Release:	2
+Version:	3.22
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
@@ -132,12 +132,11 @@ This package contains the Python bindings for gpsd. It will be needed
 for any applications that interface with gpsd via python.
 
 %prep
-%setup -q
-%autopatch -p1
+%autosetup -p1
 sed -i 's/ncurses5-config/ncurses6-config/' SConstruct
 sed -i 's/ncursesw5-config/ncursesw6-config/' SConstruct
 # fix paths in systemd unit files
-sed -i 's|/usr/local/sbin|%{_sbindir}|' systemd/*.service
+sed -i 's|/usr/local/sbin|%{_sbindir}|' systemd/*.service.in
 # fix systemd path
 sed -i 's|systemd_dir =.*|systemd_dir = '\'%{_unitdir}\''|' SConstruct
 # don't try reloading systemd when installing in the build root
@@ -178,11 +177,17 @@ scons check
 export CC=%{__cc}
 export CXX=%{__cxx}
 export DESTDIR=%{buildroot}
-STRIP=/bin/true %scons_install systemd_install udev-install
+# Setting sysroot to anything at all disables running
+# systemctl daemon-reload during "make install". But we
+# can't just replace DESTDIR with sysroot because scons
+# is "smart" enough to realize changed sysroot == changed
+# headers --> tries to rebuild and screams about not
+# finding headers in the "sysroot".
+STRIP=/bin/true %scons_install systemd_install udev-install sysroot=/
 
 # udev rules
 install -d -m 0755 %{buildroot}%{_sysconfdir}/udev/rules.d
-install -p -m 0644 gpsd.rules %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
+install -p -m 0644 gpsd-%{version}/gpsd.rules %{buildroot}%{_sysconfdir}/udev/rules.d/70-gpsd.rules
 
 install -d -m 0755 %{buildroot}%{_sysconfdir}/sysconfig
 install -p -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/sysconfig/gpsd
@@ -253,7 +258,6 @@ EOF
 %{_mandir}/man1/gpsmon.1*
 %{_mandir}/man1/gpsdecode.1*
 %{_mandir}/man5/gpsd_json.5*
-%{_mandir}/man5/srec.5*
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_sysconfdir}/udev/agents.d/usb/gpsd
 %{_sysconfdir}/udev/rules.d/*.rules
@@ -301,11 +305,17 @@ EOF
 %{_mandir}/man1/xgpsspeed.1*
 %endif
 %{_bindir}/cgps
+%{_bindir}/gpscsv
+%{_bindir}/gpsplot
+%{_bindir}/gpssubframe
 %{_bindir}/gpspipe
 %{_bindir}/gpxlogger
 %{_bindir}/ppscheck
 %{_bindir}/lcdgps
 %{_mandir}/man1/cgps.1*
+%{_mandir}/man1/gpscsv.1*
+%{_mandir}/man1/gpsplot.1*
+%{_mandir}/man1/gpssubframe.1*
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
 %{_mandir}/man1/gpxlogger.1*
