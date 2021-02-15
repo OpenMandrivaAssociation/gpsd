@@ -1,7 +1,6 @@
 %define debug_package %{nil}
 %define _hotplugdir %{_prefix}/lib/hotplug
 
-%define _disable_lto 1
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
@@ -21,7 +20,7 @@
 Summary:	GPS data translator and GUI
 Name:		gpsd
 Version:	3.22
-Release:	1
+Release:	2
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
@@ -49,6 +48,7 @@ BuildRequires:	pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(bluez)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(dbus-glib-1)
+BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	systemd-macros
@@ -159,7 +159,6 @@ sed -i 's|env.Prepend.*RPATH.*|pass #\0|' SConstruct
 	systemd=yes \
 	qt_versioned=5 \
 	dbus_export=yes
-
 
 %if 0
 # Currently fails
