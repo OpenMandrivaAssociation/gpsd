@@ -20,7 +20,7 @@
 Summary:	GPS data translator and GUI
 Name:		gpsd
 Version:	3.22
-Release:	2
+Release:	3
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
@@ -148,9 +148,13 @@ sed -i 's|env.Prepend.*RPATH.*|pass #\0|' SConstruct
 %set_build_flags
 %scons \
 	prefix=%{_prefix} \
+	execprefix=%{_exec_prefix} \
+	sbindir=%{_sbindir} \
 	datadir=%{_datadir} \
 	libdir=%{_libdir} \
-	rundir=/run \
+	rundir=%{_rundir} \
+	unitdir=%{_unitdir} \
+	udevdir=$(dirname %{_udevrulesdir}) \
 	target_python=python3 \
 	python_libdir=%{py3_puresitedir} \
 %if %{without qt}
