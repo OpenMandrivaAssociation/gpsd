@@ -1,11 +1,10 @@
-%define debug_package %{nil}
 %define _hotplugdir %{_prefix}/lib/hotplug
 
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
-%define gpsmaj 28
-%define major 28
+%define gpsmaj 29
+%define major 29
 %define libname %mklibname gps %{gpsmaj}
 %define libqtname %mklibname Qgpsmm %{gpsmaj}
 %define devname %mklibname %{name} -d
@@ -19,8 +18,8 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.22
-Release:	3
+Version:	3.23
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		http://catb.org/gpsd/
@@ -309,7 +308,9 @@ EOF
 %endif
 %{_bindir}/cgps
 %{_bindir}/gpscsv
+%{_bindir}/gpsdebuginfo
 %{_bindir}/gpsplot
+%{_bindir}/gpssnmp
 %{_bindir}/gpssubframe
 %{_bindir}/gpspipe
 %{_bindir}/gpxlogger
@@ -317,7 +318,9 @@ EOF
 %{_bindir}/lcdgps
 %{_mandir}/man1/cgps.1*
 %{_mandir}/man1/gpscsv.1*
+%{_mandir}/man1/gpsdebuginfo.1*
 %{_mandir}/man1/gpsplot.1*
+%{_mandir}/man1/gpssnmp.1*
 %{_mandir}/man1/gpssubframe.1*
 %{_mandir}/man1/gpspipe.1*
 %{_mandir}/man1/lcdgps.1.*
