@@ -18,7 +18,7 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.23
+Version:	3.23.1
 Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
