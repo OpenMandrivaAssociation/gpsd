@@ -50,7 +50,7 @@ BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	pkgconfig(python3)
-BuildRequires:	systemd-macros
+BuildRequires:	systemd-rpm-macros
 Requires:	%{name}-python >= %{EVRD}
 Requires:	%{libname} >= %{EVRD}
 %{?systemd_requires}
