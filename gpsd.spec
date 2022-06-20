@@ -88,7 +88,7 @@ This package contains a shared library for %{name}.
 %package -n %{libqtname}
 Summary:	Qt bindings for gpsd
 Group:		System/Libraries
-%rename %{oldqtlibname}
+%rename %{oldlibqtname}
 
 %description -n %{libqtname}
 This package contains Qt bindings for gpsd.
