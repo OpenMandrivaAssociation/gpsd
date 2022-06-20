@@ -5,8 +5,10 @@
 
 %define gpsmaj 29
 %define major 29
-%define libname %mklibname gps %{gpsmaj}
-%define libqtname %mklibname Qgpsmm %{gpsmaj}
+%define libname %mklibname gps
+%define libqtname %mklibname Qgpsmm
+%define oldlibname %mklibname gps %{gpsmaj}
+%define oldlibqtname %mklibname Qgpsmm %{gpsmaj}
 %define devname %mklibname %{name} -d
 
 %bcond_without qt
@@ -18,7 +20,7 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.23.1
+Version:	3.24
 Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
@@ -77,6 +79,7 @@ GPS is unplugged and replugged.
 Summary:	Libraries for gpsd
 Group:		System/Libraries
 Conflicts:	%{_lib}gpsd19 < 2.95-5
+%rename %{oldlibname}
 
 %description -n %{libname}
 This package contains a shared library for %{name}.
@@ -85,6 +88,7 @@ This package contains a shared library for %{name}.
 %package -n %{libqtname}
 Summary:	Qt bindings for gpsd
 Group:		System/Libraries
+%rename %{oldqtlibname}
 
 %description -n %{libqtname}
 This package contains Qt bindings for gpsd.
