@@ -3,12 +3,12 @@
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
-%define gpsmaj 29
-%define major 29
+%define gpsmaj 30
+%define major 30
 %define libname %mklibname gps
 %define libqtname %mklibname Qgpsmm
-%define oldlibname %mklibname gps %{gpsmaj}
-%define oldlibqtname %mklibname Qgpsmm %{gpsmaj}
+%define oldlibname %mklibname gps 29
+%define oldlibqtname %mklibname Qgpsmm 29
 %define devname %mklibname %{name} -d
 
 %bcond_without qt
@@ -20,11 +20,11 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.24
-Release:	2
+Version:	3.25
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
-Url:		http://catb.org/gpsd/
+Url:		https://gpsd.gitlab.io/gpsd/
 Source0:	http://download.savannah.gnu.org/releases/gpsd/gpsd-%{version}.tar.gz
 Source1:	gpsd.rules
 Source2:	gpsd.sysconfig
@@ -79,7 +79,7 @@ GPS is unplugged and replugged.
 Summary:	Libraries for gpsd
 Group:		System/Libraries
 Conflicts:	%{_lib}gpsd19 < 2.95-5
-%rename %{oldlibname}
+Obsoletes:	%{oldlibname} < %{EVRD}
 
 %description -n %{libname}
 This package contains a shared library for %{name}.
@@ -88,7 +88,7 @@ This package contains a shared library for %{name}.
 %package -n %{libqtname}
 Summary:	Qt bindings for gpsd
 Group:		System/Libraries
-%rename %{oldlibqtname}
+Obsoletes:	%{oldlibqtname} < %{EVRD}
 
 %description -n %{libqtname}
 This package contains Qt bindings for gpsd.
@@ -265,6 +265,7 @@ EOF
 %{_mandir}/man1/gpsdecode.1*
 %{_mandir}/man5/gpsd_json.5*
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%{_datadir}/snmp/mibs/gpsd
 %{_sysconfdir}/udev/agents.d/usb/gpsd
 %{_sysconfdir}/udev/rules.d/*.rules
 %{_udevrulesdir}/*.rules
