@@ -21,13 +21,14 @@
 Summary:	GPS data translator and GUI
 Name:		gpsd
 Version:	3.25
-Release:	2
+Release:	3
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		https://gpsd.gitlab.io/gpsd/
 Source0:	http://download.savannah.gnu.org/releases/gpsd/gpsd-%{version}.tar.gz
 Source1:	gpsd.rules
 Source2:	gpsd.sysconfig
+Patch0:		gpsd-3.25-qt6.patch
 Patch1:		gpsd-2.90-udev.patch
 
 BuildRequires:	docbook-style-xsl
@@ -35,10 +36,10 @@ BuildRequires:	udev
 BuildRequires:	xmlto
 BuildRequires:	scons
 %if %{with qt}
-BuildRequires:	pkgconfig(Qt5Core)
-BuildRequires:	pkgconfig(Qt5Gui)
-BuildRequires:	pkgconfig(Qt5Network)
-BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	pkgconfig(Qt6Core)
+BuildRequires:	pkgconfig(Qt6Gui)
+BuildRequires:	pkgconfig(Qt6Network)
+BuildRequires:	pkgconfig(Qt6Widgets)
 %endif
 %if %{with gtk}
 BuildRequires:	python-serial
@@ -164,7 +165,7 @@ sed -i 's|env.Prepend.*RPATH.*|pass #\0|' SConstruct
 	qt=no \
 %endif
 	systemd=yes \
-	qt_versioned=5 \
+	qt_versioned=6 \
 	dbus_export=yes
 
 %if 0

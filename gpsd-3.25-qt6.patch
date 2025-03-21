@@ -1,0 +1,15 @@
+diff -up gpsd-3.25/libgps/gpsutils.c.omv~ gpsd-3.25/libgps/gpsutils.c
+--- gpsd-3.25/libgps/gpsutils.c.omv~	2025-03-21 23:48:14.773484412 +0100
++++ gpsd-3.25/libgps/gpsutils.c	2025-03-21 23:51:20.886392554 +0100
+@@ -705,7 +705,11 @@ timespec_t iso8601_to_timespec(const cha
+     if (1 < sl.size()) {
+         usec = sl[1].toInt() / pow(10., (double)sl[1].size());
+     }
++#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+     ret.tv_sec = d.toTime_t();
++#else
++    ret.tv_sec = d.toSecsSinceEpoch();
++#endif
+     ret.tv_nsec = usec * 1e9;;
+ #endif
+ #endif  // __clang_analyzer__
