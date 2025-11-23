@@ -3,8 +3,8 @@
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
-%define gpsmaj 30
-%define major 30
+%define gpsmaj 32
+%define major 32
 %define libname %mklibname gps
 %define libqtname %mklibname Qgpsmm
 %define oldlibname %mklibname gps 29
@@ -20,15 +20,14 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.25
-Release:	3
+Version:	3.27
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		https://gpsd.gitlab.io/gpsd/
 Source0:	http://download.savannah.gnu.org/releases/gpsd/gpsd-%{version}.tar.gz
 Source1:	gpsd.rules
 Source2:	gpsd.sysconfig
-Patch0:		gpsd-3.25-qt6.patch
 Patch1:		gpsd-2.90-udev.patch
 
 BuildRequires:	docbook-style-xsl
@@ -246,10 +245,12 @@ EOF
 %{_bindir}/gpsprof
 %{_bindir}/gpsmon
 %{_bindir}/gpsdecode
+%{_bindir}/gpslogntp
 %{_bindir}/ntpshmmon
 %{_bindir}/ubxtool
 %{_bindir}/zerk
 %{_mandir}/man1/ntpshmmon.1.*
+%{_mandir}/man1/gpslogntp.1.*
 %{_mandir}/man8/gpsd.8*
 %{_mandir}/man8/gpsdctl.8*
 %{_mandir}/man8/gpsinit.8*
