@@ -149,7 +149,9 @@ sed -i 's|env.Prepend.*RPATH.*|pass #\0|' SConstruct
 
 %build
 %set_build_flags
-%scons \
+# FIXME using %%scons here (which usually expands to scons %{?_smp_mflags})
+# results in a crash. Non-SMP scons seems to be ok though
+scons \
 	prefix=%{_prefix} \
 	execprefix=%{_exec_prefix} \
 	sbindir=%{_sbindir} \
