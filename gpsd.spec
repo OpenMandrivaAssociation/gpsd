@@ -20,7 +20,7 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.27
+Version:	3.27.5
 Release:	2
 License:	BSD
 Group:		Sciences/Geosciences
@@ -49,6 +49,7 @@ BuildRequires:	pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(bluez)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(dbus-glib-1)
+BuildRequires:	pkgconfig(libsystemd)
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	pkgconfig(python3)
