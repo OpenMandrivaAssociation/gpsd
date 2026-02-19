@@ -21,7 +21,7 @@
 Summary:	GPS data translator and GUI
 Name:		gpsd
 Version:	3.25
-Release:	3
+Release:	5
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		https://gpsd.gitlab.io/gpsd/
