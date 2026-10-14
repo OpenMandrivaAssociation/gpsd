@@ -147,6 +147,10 @@ sed -i 's|systemd_dir =.*|systemd_dir = '\'%{_unitdir}\''|' SConstruct
 sed -i 's|systemctl daemon-reload|true|' SConstruct
 # don't set RPATH
 sed -i 's|env.Prepend.*RPATH.*|pass #\0|' SConstruct
+# SCons 4.11 treats a variant-dir .scons-option-cache as a stale duplicate and
+# os.unlink()s a path that is not there on the install re-invocation.
+sed -i "s|Variables('.scons-option-cache')|Variables(os.path.abspath('../.scons-option-cache'))|" SConscript
+sed -i "s|opts.Save('.scons-option-cache', env)|opts.Save(os.path.abspath('../.scons-option-cache'), env)|" SConscript
 
 %build
 %set_build_flags
