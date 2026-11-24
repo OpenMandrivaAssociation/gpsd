@@ -3,8 +3,8 @@
 %define _disable_rebuild_configure 1
 %define _disable_ld_no_undefined 1
 
-%define gpsmaj 32
-%define major 32
+%define gpsmaj 33
+%define major 33
 %define libname %mklibname gps
 %define libqtname %mklibname Qgpsmm
 %define oldlibname %mklibname gps 29
@@ -20,8 +20,8 @@
 
 Summary:	GPS data translator and GUI
 Name:		gpsd
-Version:	3.27.5
-Release:	4
+Version:	3.28
+Release:	1
 License:	BSD
 Group:		Sciences/Geosciences
 Url:		https://gpsd.gitlab.io/gpsd/
@@ -56,7 +56,6 @@ BuildRequires:	pkgconfig(python3)
 BuildRequires:	systemd-rpm-macros
 Requires:	%{name}-python >= %{EVRD}
 Requires:	%{libname} >= %{EVRD}
-%{?systemd_requires}
 
 %description
 gpsd is a service daemon that mediates access to a GPS sensor
@@ -230,15 +229,6 @@ install -d %{buildroot}%{_presetdir}
 cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
 enable gpsd.socket
 EOF
-
-%post
-%systemd_post %{name}.socket
-
-%preun
-%systemd_preun %{name}.socket
-
-%postun
-%systemd_postun_with_restart %{name}.socket
 
 %files
 %{_sbindir}/gpsd
