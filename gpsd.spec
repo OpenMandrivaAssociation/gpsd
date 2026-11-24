@@ -33,7 +33,8 @@ Patch1:		gpsd-2.90-udev.patch
 BuildRequires:	docbook-style-xsl
 BuildRequires:	udev
 BuildRequires:	xmlto
-BuildRequires:	scons
+# 4.11.0 crashes while reading a missing option cache. 3.28 refuses it.
+BuildRequires:	scons >= 4.11.1
 %if %{with qt}
 BuildRequires:	pkgconfig(Qt6Core)
 BuildRequires:	pkgconfig(Qt6Gui)
